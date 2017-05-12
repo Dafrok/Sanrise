@@ -1,0 +1,14 @@
+<template lang="pug">
+div
+  sanshine-layout(san-for="layout in data.children", data="layout.data")
+</template>
+
+<script>
+import SanshineLayout from '@/layout/layout.san'
+
+export default {
+  components: {
+    'sanshine-layout': SanshineLayout
+  }
+}
+</script>

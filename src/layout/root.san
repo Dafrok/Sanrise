@@ -1,0 +1,21 @@
+<template lang="pug">
+section
+  sanshine-layout(data="data")
+</template>
+
+<script>
+import SanshineLayout from '@/layout/layout.san'
+
+const mapStates = {
+  data: 'layout'
+}
+const mapActions = {}
+
+export default connect.san({
+  mapStates, mapActions
+})({
+  components: {
+    'sanshine-layout': SanshineLayout
+  }
+})
+</script>
