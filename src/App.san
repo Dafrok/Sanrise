@@ -1,0 +1,13 @@
+<template lang="pug">
+section
+  pc-editor
+</template>
+
+<script>
+import PcEditor from '@/components/pc-editor/Index.san'
+export default {
+  components: {
+    'pc-editor': PcEditor
+  }
+}
+</script>

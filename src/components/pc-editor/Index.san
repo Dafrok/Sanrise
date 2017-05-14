@@ -1,0 +1,21 @@
+<template lang="pug">
+section
+  div {{info.title}}
+  sr-layout(layout="{{layout}}")
+</template>
+
+<script>
+import {connect} from 'san-store'
+import Layout from '@/components/pc-editor/Layout.san'
+
+const mapStates = {
+  info: 'info',
+  layout: 'layout'
+}
+const mapActions = {}
+export default connect.san(mapStates, mapActions)({
+  components: {
+    'sr-layout': Layout
+  }
+})
+</script>

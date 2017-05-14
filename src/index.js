@@ -1,31 +1,16 @@
+import '@/actions/init.js'
 import {store} from 'san-store'
-import {builder} from 'san-update'
+import {router} from 'san-router'
+import App from '@/App.san'
 
-store.addAction('initLayout', name => builder().set('layout', {
-  id: null,
-  style: {},
-  children: [
-    {
-      id: null,
-      type: 0,
-      style: {},
-      children: []
-    },
-    {
-      id: null,
-      type: 1,
-      style: {},
-      children: []
-    }
-  ]
-}))
+store.dispatch('init')
 
-store.addAction('initInfo', name => builder().set('info', {
-  title: 'Sanshine',
-}))
+router.setMode('hash')
 
-store.addAction('initFragment', name => builder().set('fragments', [{
-  name: 'fragment-1',
-  style: {},
-  children: []
-}]))
+router.add({
+  rule: '/',
+  Component: App,
+  target: 'body'
+})
+
+router.start()

@@ -1,0 +1,14 @@
+<template lang="pug">
+div(data-id="{{layout.id}}")
+  sr-layout(san-if="layout.isLayout", san-for="item in layout.children", layout="{{item}}")
+</template>
+
+<script>
+import Layout from '@/components/pc-editor/Layout.san'
+
+export default {
+  components: {
+    'sr-layout': 'self'
+  }
+}
+</script>
