@@ -32,7 +32,7 @@ store.addAction('addLayout', (payload, {getState}) => {
 store.addAction('removeLayout', (payload, {getState, dispatch}) => {
   const activeLayout = (getState('pc.activeLayout') || '').split('.')
   const children = activeLayout.splice(-1)
-  const index = children[0].match(/children\[(.+)\]/)[1]
+  const index = (children[0].match(/children\[(.+)\]/) || 0)[1]
   dispatch('activeLayout', null)
-  return activeLayout.length > 0 && builder().splice(`pc.data.${activeLayout.join('.')}.children`, +index, 1)
+  return activeLayout.length > 0 && index !== undefined && builder().splice(`pc.data.${activeLayout.join('.')}.children`, +index, 1)
 })
