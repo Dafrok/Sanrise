@@ -2,17 +2,15 @@ import {store} from 'san-store'
 import {builder} from 'san-update'
 import {Layout} from '@/base/factory.js'
 
-store.addAction('initLayout', payload => builder().set('layout', new Layout()))
+store.addAction('initLayout', payload => builder().set('pc.data.layout', new Layout()))
 
-store.addAction('initInfo', payload => builder().set('info', {
   title: 'Sanrise Project',
   idOrder: 0
 }))
 
-store.addAction('initFragment', payload => builder().set('fragment', []))
+store.addAction('initFragment', payload => builder().set('pc.data.fragment', []))
 
-store.addAction('initVariable', payload => builder().set('variable', {}))
-
+store.addAction('initVariable', payload => builder().set('pc.data.variable', {}))
 
 store.addAction('init', (payload, {dispatch}) => {
   dispatch('initInfo')
@@ -21,4 +19,6 @@ store.addAction('init', (payload, {dispatch}) => {
   dispatch('initLayout')
 })
 
-store.addAction('genId', (payload, {getState}) => builder().set('info.idOrder', getState('info.idOrder') + 1))
+store.addAction('genId', (payload, {getState}) => builder().set('pc.data.info.idOrder', getState('pc.data.info.idOrder') + 1))
+
+store.addAction('activeLayout', (payload, {getState}) => builder().set('pc.activeLayout', getState('pc.activeLayout') === payload ? null : payload))

@@ -1,14 +1,46 @@
 <template lang="pug">
-div(data-id="{{layout.id}}")
-  sr-layout(san-if="layout.isLayout", san-for="item in layout.children", layout="{{item}}")
+div(data-id="{{layout.id}}", class="{{componentClass}}", style="{{componentStyle}}", on-click="activeLayout($event)")
+  sr-layout(san-if="layout.type === 0", san-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
 </template>
 
 <script>
+import {store, connect} from 'san-store'
 import Layout from '@/components/pc-editor/Layout.san'
 
-export default {
+const mapStates = {
+  activeLayout: 'pc.activeLayout'
+}
+
+export default connect.san(mapStates)({
   components: {
     'sr-layout': 'self'
+  },
+  attached () {
+    // console.log(this.data.get('path'))
+  },
+  activeLayout (e) {
+    e.stopPropagation()
+    store.dispatch('activeLayout', this.data.get('path'))
+  },
+  computed: {
+    componentClass () {
+      return this.data.get('activeLayout') === this.data.get('path') ? 'active' : ''
+    },
+    componentStyle () {
+      const style = this.data.get('layout.style') || {}
+      let ret = ''
+      for (const key in style) {
+        ret += `${key}: ${style[key]};`
+      }
+      return ret
+    }
   }
-}
+})
 </script>
+
+<style lang="stylus">
+.active {
+  user-select: none;
+  outline: 1px solid red;
+}
+</style>

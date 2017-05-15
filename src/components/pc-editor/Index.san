@@ -1,20 +1,26 @@
 <template lang="pug">
 section
   div {{info.title}}
-  sr-layout(layout="{{layout}}")
+  tool-bar
+  status-bar
+  sr-layout(layout="{{layout}}", isRoot="{{true}}", path="layout")
 </template>
 
 <script>
 import {connect} from 'san-store'
-import Layout from '@/components/pc-editor/Layout.san'
+import ToolBar from './ToolBar.san'
+import StatusBar from './StatusBar.san'
+import Layout from './Layout.san'
 
 const mapStates = {
-  info: 'info',
-  layout: 'layout'
+  info: 'pc.data.info',
+  layout: 'pc.data.layout'
 }
 const mapActions = {}
 export default connect.san(mapStates, mapActions)({
   components: {
+    'tool-bar': ToolBar,
+    'status-bar': StatusBar,
     'sr-layout': Layout
   }
 })

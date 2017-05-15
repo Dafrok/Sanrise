@@ -12,26 +12,26 @@ module.exports = {
     rules: [
       {
         test: /\.san$/,
-        loader: 'san-loader'
+        use: 'san-loader'
       },
       {
         test: /\.js$/,
-        loader: 'babel-loader',
+        use: 'babel-loader',
         exclude: /node_modules/
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader'
+        use: 'style-loader!css-loader'
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        loader: 'url-loader'
+        use: 'url-loader'
       }
     ]
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, '../src'),
+      '@': path.resolve(__dirname, '../src')
     }
   },
   plugins: [

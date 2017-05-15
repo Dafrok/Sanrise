@@ -1,0 +1,88 @@
+<template lang="pug">
+ul.status-bar
+  li(san-for="item, index in layoutList", on-click="activeLayout($event, item, index)")
+    span.type <{{elementTypes[item.layout.type]}}>&nbsp;
+    span.id {{item.layout.id}}
+</template>
+
+<script>
+import {connect, store} from 'san-store'
+import elementTypes from '@/config/element-types.js'
+
+export default connect.san({path: 'pc.activeLayout'})({
+  initData () {
+    return {
+      elementTypes
+    }
+  },
+  activeLayout (e, item, index) {
+    e.stopPropagation(e)
+    if (index === this.data.get('layoutList').length - 1) {
+      return
+    }
+    store.dispatch('activeLayout', item.path)
+  },
+  computed: {
+    layoutList () {
+      const path = this.data.get('path')
+      return path ? path.split('.').reduce((arr, item, index) => {
+        const layoutPath = `${arr.length ? arr[index - 1].path + '.' : ''}${item}`
+        arr.push({
+          path: layoutPath,
+          layout: store.getState(`pc.data.${layoutPath}`)
+        })
+        return arr
+    }, []) : []
+    }
+  }
+})
+</script>
+
+<style lang="stylus">
+@import "~@/config/variables.styl"
+$status-bar-height=18px
+$s-background-color=#ddd
+$s-text-color=#444
+
+.status-bar
+  user-select none
+  font-size 12px
+  position fixed
+  bottom 0
+  left 0
+  right 0
+  background $s-background-color
+  color $s-text-color
+  height $status-bar-height
+  overflow hidden
+  background $background
+  box-shadow 0 0 2px $s-text-color
+  li
+    cursor pointer
+    display inline-block
+    height $status-bar-height
+    line-height $status-bar-height
+    position relative
+    padding 0 $status-bar-height 0 $status-bar-height
+    &:hover
+      background $s-text-color
+      color $s-background-color
+    &::after
+      border $status-bar-height solid $s-background-color
+      right 0
+    &::before
+      border $status-bar-height solid $s-text-color
+      right -10px
+    &::after, &::before
+      z-index -1
+      content ''
+      position absolute
+      top 0
+      bottom 0
+      margin auto
+      width 0
+      height 0
+      border-right 0
+      border-top-color transparent
+      border-bottom-color transparent
+</style>

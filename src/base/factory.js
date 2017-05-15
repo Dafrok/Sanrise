@@ -2,16 +2,16 @@ import {store} from 'san-store'
 
 export class Widget {
   constructor (options = {}) {
-    this.isLayout = false
+    this.type = 1
   }
 }
 
 export class Layout {
   constructor (options = {}) {
     store.dispatch('genId')
-    this.isLayout = true
-    this.id = `sr-${store.getState('info.idOrder')}`
+    this.type = 0
+    this.id = `sr-${store.getState('pc.data.info.idOrder')}`
     this.children = options.children || []
-    this.style = options.style || {}
+    this.style = options.style || {border: '1px solid black', height: '100px'}
   }
 }
