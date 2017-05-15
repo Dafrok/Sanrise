@@ -27,6 +27,7 @@ export default connect.san({path: 'pc.activeLayout'})({
       const path = this.data.get('path')
       return path ? path.split('.').reduce((arr, item, index) => {
         const layoutPath = `${arr.length ? arr[index - 1].path + '.' : ''}${item}`
+        console.log(layoutPath, store.getState(`pc.data.${layoutPath}`))
         arr.push({
           path: layoutPath,
           layout: store.getState(`pc.data.${layoutPath}`)

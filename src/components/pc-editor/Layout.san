@@ -15,9 +15,6 @@ export default connect.san(mapStates)({
   components: {
     'sr-layout': 'self'
   },
-  attached () {
-    // console.log(this.data.get('path'))
-  },
   activeLayout (e) {
     e.stopPropagation()
     store.dispatch('activeLayout', this.data.get('path'))
