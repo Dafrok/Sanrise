@@ -1,0 +1,44 @@
+<template lang="pug">
+.layout-tree
+  .id(class="{{path === activeLayout ? 'active' : ''}}", on-dblclick="edit($event)", on-click="activeLayout($event)")
+    form(san-if="editable", on-submit="submit($event)")
+      input(value="{= id =}", on-blur="submit($event)")
+    span(san-else) {{layout.id}}
+  ul.list(san-if="layout.children.length")
+    li(san-for="item, index in layout.children")
+      layout-tree(san-if="item.type === 0", layout="{{item}}", path="{{path}}.children[{{index}}]", activeLayout="{{activeLayout}}")
+</template>
+
+<script>
+import {store} from 'san-store'
+export default {
+  initData () {
+    return {
+      editable: false,
+      id: ''
+    }
+  },
+  activeLayout (e) {
+    e.stopPropagation()
+    store.dispatch('activeLayoutForce', this.data.get('path'))
+  },
+  edit (e) {
+    e.preventDefault()
+    this.data.set('id', this.data.get('layout.id'))
+    this.data.set('editable', true)
+    setTimeout(() => this.el.querySelector('input').focus())
+  },
+  submit (e) {
+    e.preventDefault()
+    store.dispatch('updateLayoutId', {
+      path: this.data.get('path'),
+      value: this.data.get('id')
+    })
+    this.data.set('editable', false)
+    setTimeout(() => this.data.set('id', ''))
+  },
+  components: {
+    'layout-tree': 'self'
+  }
+}
+</script>

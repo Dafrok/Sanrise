@@ -1,0 +1,53 @@
+<template lang="pug">
+section.main-frame
+  header
+    slot(name="header")
+  main
+    slot
+  footer
+    slot(name="footer")
+  aside
+    slot(name="aside")
+  nav
+    slot(name="nav")
+</template>
+
+<style lang="stylus">
+@import "~@/config/variables.styl"
+$top-height=40px
+$bottom-height=18px
+$left-width=30px
+$right-width=200px
+.main-frame
+  &>header, &>footer, &>main, &>aside, &>nav
+    position fixed
+  &>header, &>footer, &>aside, &>nav
+    user-select none
+  &>header, &>footer
+    background $primary-color
+    left 0
+    right 0
+  &>header
+    top 0
+    height $top-height
+  &>footer
+    bottom 0
+    height $bottom-height
+  &>aside, &>nav
+    color $text-color
+    background $aside-color
+    top $top-height
+    bottom $bottom-height
+  &>aside
+    right 0
+    width $right-width
+  &>nav
+    left 0
+    width $left-width
+  &>main
+    overflow auto
+    top $top-height
+    bottom $bottom-height
+    left $left-width
+    right $right-width
+</style>

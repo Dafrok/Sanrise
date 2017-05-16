@@ -1,15 +1,11 @@
 <template lang="pug">
-section
+section.editor
   div {{info.title}}
-  tool-bar
-  status-bar
   sr-layout(layout="{{layout}}", isRoot="{{true}}", path="layout")
 </template>
 
 <script>
 import {connect} from 'san-store'
-import ToolBar from './ToolBar.san'
-import StatusBar from './StatusBar.san'
 import Layout from './Layout.san'
 
 const mapStates = {
@@ -19,9 +15,14 @@ const mapStates = {
 const mapActions = {}
 export default connect.san(mapStates, mapActions)({
   components: {
-    'tool-bar': ToolBar,
-    'status-bar': StatusBar,
     'sr-layout': Layout
   }
 })
 </script>
+
+<style lang="stylus">
+.editor
+  .layout
+    &.active
+      outline 1px solid red
+</style>

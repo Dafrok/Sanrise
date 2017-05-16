@@ -1,0 +1,50 @@
+<template lang="pug">
+section.layout-list
+  layout-tree(layout="{{layout}}", activeLayout="{{activeLayout}}", path="layout")
+</template>
+
+<script>
+import {connect} from 'san-store'
+import LayoutTree from './LayoutTree.san'
+
+export default connect.san({
+  layout: 'pc.data.layout',
+  activeLayout: 'pc.activeLayout'
+})({
+  components: {
+    'layout-tree': LayoutTree
+  }
+})
+</script>
+
+<style lang="stylus">
+@import '~@/config/variables.styl'
+.layout-list
+  background #666
+  .layout-tree
+    font-size 14px
+    .id
+      border-bottom 1px solid #444
+      line-height 24px
+      height 24px
+      text-indent 10px
+      white-space nowrap
+      overflow auto
+      position relative
+      input
+        outline 0
+        width 100%
+        height 100%
+        border 0
+        margin 0
+        padding 0
+        position absolute
+        display block
+        text-indent 10px
+        background transparent
+        color white
+        font-size 14px
+      &.active
+        background $highlight-color
+</style>
+

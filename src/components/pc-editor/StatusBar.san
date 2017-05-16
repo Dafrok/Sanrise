@@ -40,20 +40,16 @@ export default connect.san({path: 'pc.activeLayout'})({
 
 <style lang="stylus">
 @import "~@/config/variables.styl"
+$s-background-color=$aside-color
+$s-text-color=$text-color
 $status-bar-height=18px
-$s-background-color=#ddd
-$s-text-color=#444
 
 .status-bar
   user-select none
   font-size 12px
-  position fixed
-  bottom 0
-  left 0
-  right 0
-  background $s-background-color
-  color $s-text-color
+  width 100%
   height $status-bar-height
+  color $s-text-color
   overflow hidden
   background $background
   box-shadow 0 0 2px $s-text-color
@@ -67,14 +63,16 @@ $s-text-color=#444
     &:hover
       background $s-text-color
       color $s-background-color
+      &::after
+        border-left-color $s-text-color
     &::after
-      border $status-bar-height solid $s-background-color
+      border $status-bar-height solid $primary-color
       right 0
     &::before
       border $status-bar-height solid $s-text-color
-      right -10px
+      right -($status-bar-height / 2)
     &::after, &::before
-      z-index -1
+      z-index 0
       content ''
       position absolute
       top 0

@@ -1,5 +1,5 @@
 <template lang="pug">
-div(data-id="{{layout.id}}", class="{{componentClass}}", style="{{componentStyle}}", on-click="activeLayout($event)")
+div.layout(data-id="{{layout.id}}", class="{{componentClass}}", style="{{componentStyle}}", on-click="activeLayout($event)")
   sr-layout(san-if="layout.type === 0", san-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
 </template>
 
@@ -34,10 +34,3 @@ export default connect.san(mapStates)({
   }
 })
 </script>
-
-<style lang="stylus">
-.active {
-  user-select: none;
-  outline: 1px solid red;
-}
-</style>

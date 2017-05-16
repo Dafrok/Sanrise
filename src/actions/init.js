@@ -23,6 +23,7 @@ store.addAction('init', (payload, {dispatch}) => {
 store.addAction('genId', (payload, {getState}) => builder().set('pc.data.info.idOrder', getState('pc.data.info.idOrder') + 1))
 
 store.addAction('activeLayout', (payload, {getState}) => builder().set('pc.activeLayout', getState('pc.activeLayout') === payload ? null : payload))
+store.addAction('activeLayoutForce', (payload, {getState}) => builder().set('pc.activeLayout', payload))
 
 store.addAction('addLayout', (payload, {getState}) => {
   const activeLayout = getState('pc.activeLayout')
@@ -35,4 +36,22 @@ store.addAction('removeLayout', (payload, {getState, dispatch}) => {
   const index = (children[0].match(/children\[(.+)\]/) || 0)[1]
   dispatch('activeLayout', null)
   return activeLayout.length > 0 && index !== undefined && builder().splice(`pc.data.${activeLayout.join('.')}.children`, +index, 1)
+})
+
+store.addAction('updateLayoutId', (payload, {getState}) => {
+  const layout = getState('pc.data.layout')
+  const walkLayout = (layout, callback) => {
+    let res = callback(layout)
+    !res && layout.children && layout.children.forEach(item => res = res || walkLayout(item, callback))
+    return res
+  }
+  if (!payload.value) {
+    // id 为空时执行
+    return
+  }
+  if (walkLayout(layout, layout => layout.id === payload.value)) {
+    // id 重复时执行
+    return
+  }
+  return builder().set(`pc.data.${payload.path}.id`, payload.value)
 })
