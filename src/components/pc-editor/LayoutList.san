@@ -1,6 +1,6 @@
 <template lang="pug">
 section.layout-list
-  layout-tree(layout="{{layout}}", activeLayout="{{activeLayout}}", path="layout")
+  layout-tree(layout="{{layout}}", activeLayout="{{activeLayout}}", path="layout", isRoot="{{!0}}")
 </template>
 
 <script>
@@ -22,6 +22,9 @@ export default connect.san({
 $list-height=24px
 .layout-list
   background #666
+  height 100%
+  overflow-x hidden
+  overflow-y auto
   .layout-tree
     font-size 14px
     .label
@@ -66,9 +69,9 @@ $list-height=24px
           color white
           font-size 14px
       &.active
+        background $highlight-color
         .content
           padding-right 16px
-        background $highlight-color
         .tools
           display block
 </style>

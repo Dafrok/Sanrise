@@ -32,4 +32,6 @@ ul
   padding 0
 li
   list-style none
+.hidden
+  visibility hidden
 </style>

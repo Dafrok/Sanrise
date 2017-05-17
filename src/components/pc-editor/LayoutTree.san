@@ -2,14 +2,14 @@
 .layout-tree
   .label(class="{{path === activeLayout ? 'active' : ''}}", on-dblclick="edit($event)", on-click="activeLayout($event)")
     .leaf(san-if="!showTools")
-      form.edit(san-if="editable", on-submit="submit($event)")
+      form.edit(san-if="editable && path === activeLayout", on-submit="submit($event)")
         input(value="{= id =}", on-blur="submit($event)")
-      .content(on-click="toggleExpand", san-else)
-        span.expand(san-if="!layout.children.length")
-          span.fa.fa-eye
-        span.expand(san-else)
-          span(san-if="expanded").fa.fa-caret-down
-          span(san-else).fa.fa-caret-right
+      .content(san-else)
+        span.expand
+          span(san-if="isRoot").fa.fa-chevron-left
+          span(san-else, on-click="toggleLayout")
+            span(san-if="layout.hidden").fa.fa-eye-slash
+            span(san-else).fa.fa-eye
         span {{layout.id}}
     .tools(san-if="!editable", on-mouseenter="toggleTools(!0)", on-mouseleave="toggleTools(!1)")
       span(san-if="showTools")
@@ -20,7 +20,7 @@
         a.fa.fa-plus(on-click="addLayout")
         a.fa.fa-pencil-square-o
       span.fa.fa-ellipsis-h(san-if="!showTools")
-  ul.list(san-if="expanded && layout.children.length")
+  ul.list(san-if="layout.children.length")
     li(san-for="item, index in layout.children")
       layout-tree(san-if="item.type === 0", layout="{{item}}", path="{{path}}.children[{{index}}]", activeLayout="{{activeLayout}}")
 </template>
@@ -31,7 +31,6 @@ export default {
   initData () {
     return {
       showTools: false,
-      expanded: false,
       editable: false,
       id: ''
     }
@@ -39,22 +38,18 @@ export default {
   toggleTools (bool) {
     this.data.set('showTools', bool)
   },
-  toggleExpand (bool) {
-    if (!this.data.get('layout.children.length')) {
-      return
-    }
-    const expanded = !this.data.get('expanded')
-    this.data.set('expanded', expanded)
-    expanded && this.fire('expanded')
-  },
   addLayout () {
     store.dispatch('addLayout')
+  },
+  toggleLayout () {
+    this.activeLayout()
+    store.dispatch('toggleLayout')
   },
   removeLayout () {
     store.dispatch('removeLayout')
   },
   activeLayout (e) {
-    e.stopPropagation()
+    e && e.stopPropagation()
     store.dispatch('activeLayoutForce', this.data.get('path'))
   },
   edit (e) {

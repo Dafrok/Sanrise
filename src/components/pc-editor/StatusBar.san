@@ -53,6 +53,9 @@ $status-bar-height=18px
   overflow hidden
   background $background
   box-shadow 0 0 2px $s-text-color
+  overflow-x auto
+  overflow-y hidden
+  white-space nowrap
   li
     cursor pointer
     display inline-block

@@ -30,6 +30,7 @@ export default connect.san(mapStates)({
       for (const key in style) {
         ret += `${key}: ${style[key]};`
       }
+      ret += this.data.get('layout.hidden') ? 'visibility: hidden;' : ''
       return ret
     }
   }

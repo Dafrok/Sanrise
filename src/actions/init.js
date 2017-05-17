@@ -30,6 +30,13 @@ store.addAction('addLayout', (payload, {getState}) => {
   return activeLayout && builder().push(`pc.data.${activeLayout}.children`, new Layout())
 })
 
+store.addAction('toggleLayout', (payload, {getState}) => {
+  const path = `pc.data.${getState('pc.activeLayout')}.hidden`
+  const state = getState(path)
+  return builder().set(path, !state)
+})
+
+
 store.addAction('removeLayout', (payload, {getState, dispatch}) => {
   const activeLayout = (getState('pc.activeLayout') || '').split('.')
   const children = activeLayout.splice(-1)

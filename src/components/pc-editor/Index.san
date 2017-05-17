@@ -24,11 +24,14 @@ export default connect.san(mapStates, mapActions)({
 @import "~@/config/variables.styl"
 .editor
   .layout
+    pointer-events auto
+    &>.helper
+      pointer-events none
+      width 100%
+      height 100%
+      position relative
     &.active
       &>.helper
-        width 100%
-        height 100%
-        position relative
         &::before
           content ''
           border 2px dashed $highlight-color
@@ -37,4 +40,15 @@ export default connect.san(mapStates, mapActions)({
           bottom 0
           left 0
           right 0
+          animation active-layout 1s infinite
+@keyframes active-layout
+  0%
+    border-color $highlight-color
+    box-shadow 0 0 3px white inset
+  50%
+    border-color $primary-color
+    box-shadow 0 0 3px black inset
+  100%
+    border-color $highlight-color
+    box-shadow 0 0 3px white inset
 </style>
