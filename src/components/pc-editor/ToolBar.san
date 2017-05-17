@@ -1,19 +1,15 @@
 <template lang="pug">
 section
-  button New Project
-  button(on-click="addLayout") Add Layout
-  button(on-click="removeLayout") Remove Layout
+  a.fa.fa-folder-open
+  a.fa.fa-floppy-o
+  a.fa.fa-cog
+  a.fa.fa-internet-explorer
+  a.fa.fa-share-square-o
 </template>
 
 <script>
 import {store} from 'san-store'
 
 export default {
-  addLayout () {
-    store.dispatch('addLayout')
-  },
-  removeLayout () {
-    store.dispatch('removeLayout')
-  }
 }
 </script>

@@ -1,6 +1,7 @@
 <template lang="pug">
 div.layout(data-id="{{layout.id}}", class="{{componentClass}}", style="{{componentStyle}}", on-click="activeLayout($event)")
-  sr-layout(san-if="layout.type === 0", san-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
+  .helper
+    sr-layout(san-if="layout.type === 0", san-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
 </template>
 
 <script>

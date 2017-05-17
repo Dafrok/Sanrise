@@ -19,32 +19,57 @@ export default connect.san({
 
 <style lang="stylus">
 @import '~@/config/variables.styl'
+$list-height=24px
 .layout-list
   background #666
   .layout-tree
     font-size 14px
-    .id
+    .label
       border-bottom 1px solid #444
-      line-height 24px
-      height 24px
-      text-indent 10px
-      white-space nowrap
-      overflow auto
+      line-height $list-height
+      height $list-height
       position relative
-      input
-        outline 0
-        width 100%
-        height 100%
-        border 0
-        margin 0
-        padding 0
+      padding 0 10px
+      .leaf
+        .expand
+          display inline-block
+          width 20px
+          text-align center
+        .content
+          overflow hidden
+          white-space nowrap
+          text-overflow ellipsis
+      .fa
+        margin-right 10px
+        cursor pointer
+        &:hover
+          color #ccc
+      .tools
+        display none
         position absolute
-        display block
-        text-indent 10px
-        background transparent
-        color white
-        font-size 14px
+        right 0
+        top 0
+        bottom 0
+      .edit
+        width 100%
+        height $list-height
+        input
+          outline 0
+          width 100%
+          height $list-height
+          border 0
+          margin 0
+          padding 0
+          display block
+          text-indent 20px
+          background transparent
+          color white
+          font-size 14px
       &.active
+        .content
+          padding-right 16px
         background $highlight-color
+        .tools
+          display block
 </style>
 

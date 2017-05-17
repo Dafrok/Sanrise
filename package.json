@@ -47,6 +47,7 @@
     "webpack-dev-server": "^2.4.2"
   },
   "dependencies": {
+    "font-awesome": "^4.7.0",
     "san": "^3.1.0-alpha.1",
     "san-router": "^1.0.3",
     "san-store": "^1.0.1",

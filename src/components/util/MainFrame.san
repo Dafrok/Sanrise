@@ -24,6 +24,7 @@ $right-width=200px
   &>header, &>footer, &>aside, &>nav
     user-select none
   &>header, &>footer
+    color $text-color
     background $primary-color
     left 0
     right 0

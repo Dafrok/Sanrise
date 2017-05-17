@@ -1,10 +1,26 @@
 <template lang="pug">
 .layout-tree
-  .id(class="{{path === activeLayout ? 'active' : ''}}", on-dblclick="edit($event)", on-click="activeLayout($event)")
-    form(san-if="editable", on-submit="submit($event)")
-      input(value="{= id =}", on-blur="submit($event)")
-    span(san-else) {{layout.id}}
-  ul.list(san-if="layout.children.length")
+  .label(class="{{path === activeLayout ? 'active' : ''}}", on-dblclick="edit($event)", on-click="activeLayout($event)")
+    .leaf(san-if="!showTools")
+      form.edit(san-if="editable", on-submit="submit($event)")
+        input(value="{= id =}", on-blur="submit($event)")
+      .content(on-click="toggleExpand", san-else)
+        span.expand(san-if="!layout.children.length")
+          span.fa.fa-eye
+        span.expand(san-else)
+          span(san-if="expanded").fa.fa-caret-down
+          span(san-else).fa.fa-caret-right
+        span {{layout.id}}
+    .tools(san-if="!editable", on-mouseenter="toggleTools(!0)", on-mouseleave="toggleTools(!1)")
+      span(san-if="showTools")
+        a.fa.fa-trash(on-click="removeLayout")
+        a.fa.fa-cut
+        a.fa.fa-copy
+        a.fa.fa-paste
+        a.fa.fa-plus(on-click="addLayout")
+        a.fa.fa-pencil-square-o
+      span.fa.fa-ellipsis-h(san-if="!showTools")
+  ul.list(san-if="expanded && layout.children.length")
     li(san-for="item, index in layout.children")
       layout-tree(san-if="item.type === 0", layout="{{item}}", path="{{path}}.children[{{index}}]", activeLayout="{{activeLayout}}")
 </template>
@@ -14,9 +30,28 @@ import {store} from 'san-store'
 export default {
   initData () {
     return {
+      showTools: false,
+      expanded: false,
       editable: false,
       id: ''
     }
+  },
+  toggleTools (bool) {
+    this.data.set('showTools', bool)
+  },
+  toggleExpand (bool) {
+    if (!this.data.get('layout.children.length')) {
+      return
+    }
+    const expanded = !this.data.get('expanded')
+    this.data.set('expanded', expanded)
+    expanded && this.fire('expanded')
+  },
+  addLayout () {
+    store.dispatch('addLayout')
+  },
+  removeLayout () {
+    store.dispatch('removeLayout')
   },
   activeLayout (e) {
     e.stopPropagation()
@@ -24,6 +59,9 @@ export default {
   },
   edit (e) {
     e.preventDefault()
+    if (this.data.get('showTools')) {
+      return
+    }
     this.data.set('id', this.data.get('layout.id'))
     this.data.set('editable', true)
     setTimeout(() => this.el.querySelector('input').focus())
