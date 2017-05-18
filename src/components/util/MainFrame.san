@@ -14,10 +14,10 @@ section.main-frame
 
 <style lang="stylus">
 @import "~@/config/variables.styl"
-$top-height=40px
+$top-height=30px
 $bottom-height=18px
 $left-width=30px
-$right-width=200px
+$right-width=150px
 .main-frame
   &>header, &>footer, &>main, &>aside, &>nav
     position fixed
@@ -31,6 +31,9 @@ $right-width=200px
   &>header
     top 0
     height $top-height
+    line-height $top-height
+    box-shadow 0 0 3px $primary-color
+    z-index 1
   &>footer
     bottom 0
     height $bottom-height
@@ -39,6 +42,8 @@ $right-width=200px
     background $aside-color
     top $top-height
     bottom $bottom-height
+    overflow-y auto
+    overflow-x hidden
   &>aside
     right 0
     width $right-width

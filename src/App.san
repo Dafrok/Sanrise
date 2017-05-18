@@ -2,36 +2,41 @@
 section
   main-frame
     status-bar(slot="footer")
-    tool-bar(slot="header")
-    layout-list(slot="aside")
+    title-bar(slot="header")
+    aside-panel(slot="aside")
     pc-editor
 </template>
 
 <script>
 import PcEditor from '@/components/pc-editor/Index.san'
-import ToolBar from '@/components/pc-editor/ToolBar.san'
+import TitleBar from '@/components/pc-editor/TitleBar.san'
 import StatusBar from '@/components/pc-editor/StatusBar.san'
-import LayoutList from '@/components/pc-editor/LayoutList.san'
+import AsidePanel from '@/components/pc-editor/aside-panels/Index.san'
 import MainFrame from '@/components/util/MainFrame.san'
 export default {
   components: {
     'main-frame': MainFrame,
     'pc-editor': PcEditor,
-    'tool-bar': ToolBar,
+    'title-bar': TitleBar,
     'status-bar': StatusBar,
-    'layout-list': LayoutList
+    'aside-panel': AsidePanel
   }
 }
 </script>
 
 <style lang="stylus">
+@import '~@/config/variables.styl'
 html, body
   margin 0
-ul
+ul:not(.editor)
   margin 0
   padding 0
-li
+li:not(.editor)
   list-style none
 .hidden
   visibility hidden
+a:not(.editor)
+  color $text-color
+  &:hover
+    color $highlight-color-gray
 </style>

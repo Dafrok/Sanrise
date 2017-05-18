@@ -1,0 +1,73 @@
+<template lang="pug">
+div.style-panel
+  table
+    tbody
+      tr(san-for="style in styleList")
+        td
+          div {{style.value.name}}
+        td
+          div
+            input(value="{{currentLayout.style[style.key]}}", on-input="handleInput($event, style.key)")
+</template>
+
+<script>
+import {store, connect} from 'san-store'
+import {getCurrentLayout} from '@/base/util.js'
+import styleAlias, {order} from '@/config/style-alias.js'
+
+export default connect.san({
+  layout: 'pc.data.layout',
+  activeLayout: 'pc.activeLayout'
+})({
+  initData: {
+    styleValues: {}
+  },
+  handleInput (e, key) {
+    store.dispatch('updateLayoutStyle', {
+      key,
+      value: e.target.value
+    })
+  },
+  computed: {
+    currentLayout () {
+      const activeLayout = this.data.get('activeLayout')
+      const layout = this.data.get('layout')
+      return getCurrentLayout(layout, activeLayout)
+    },
+    styleList () {
+      const ret = order.map(key => ({
+        key,
+        value: styleAlias[key]
+      }))
+      return ret
+    }
+  }
+})
+</script>
+
+<style lang="stylus">
+@import "~@/config/variables.styl"
+.style-panel
+  font-size 12px
+  table
+    border-collapse: collapse;
+    td
+      background white
+      width 50%
+      border 1px solid $primary-color
+      color $primary-color
+      &:first-child
+        background-color $text-color
+      div
+        width 100%
+        text-overflow ellipsis
+        white-space nowrap
+        overflow hidden
+      input
+        width 100%
+        height 100%
+        border 0
+        padding 0
+        margin 0
+        outline 0
+</style>

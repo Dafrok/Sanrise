@@ -1,0 +1,49 @@
+<template lang="pug">
+section.pc-title-bar
+  .title {{title}}
+  .toolbar
+    a
+      span 源码
+      span.fa.fa-code
+    a
+      span 发布
+      span.fa.fa-share-square-o
+    a
+      span 设置
+      span.fa.fa-cog
+    a
+      span 预览
+      span.fa.fa-internet-explorer
+    a
+      span 打开
+      span.fa.fa-folder-open
+    a
+      span 保存
+      span.fa.fa-floppy-o
+</template>
+
+<script>
+import {store, connect} from 'san-store'
+
+export default connect.san({title: 'pc.data.info.title'})({
+})
+</script>
+
+<style lang="stylus">
+.pc-title-bar
+  .toolbar, .title
+    position absolute
+    top 0
+    bottom 0
+  .toolbar
+    right 10px
+    a
+      cursor pointer
+      span
+        font-size 14px
+      .fa
+        margin-left 5px
+      margin-left 15px
+  .title
+    left 10px
+</style>

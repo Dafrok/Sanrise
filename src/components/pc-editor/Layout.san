@@ -6,6 +6,7 @@ div.layout(data-id="{{layout.id}}", class="{{componentClass}}", style="{{compone
 
 <script>
 import {store, connect} from 'san-store'
+import kebab from 'kebab-case'
 import Layout from '@/components/pc-editor/Layout.san'
 
 const mapStates = {
@@ -28,7 +29,7 @@ export default connect.san(mapStates)({
       const style = this.data.get('layout.style') || {}
       let ret = ''
       for (const key in style) {
-        ret += `${key}: ${style[key]};`
+        ret += `${kebab(key)}: ${style[key]};`
       }
       ret += this.data.get('layout.hidden') ? 'visibility: hidden;' : ''
       return ret

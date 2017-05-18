@@ -1,0 +1,29 @@
+<template lang="pug">
+div.aside-panel
+  layout-panel
+  style-panel(san-if="activeLayout")
+</template>
+
+<script>
+import LayoutPanel from './LayoutPanel.san'
+import StylePanel from './StylePanel.san'
+import {connect} from 'san-store'
+export default connect.san({
+  layout: 'pc.data.layout',
+  activeLayout: 'pc.activeLayout'
+})({
+  components: {
+    'layout-panel': LayoutPanel,
+    'style-panel': StylePanel
+  }
+})
+</script>
+
+<style lang="stylus">
+.aside-panel
+  height 100%
+  width 100%
+  display flex
+  flex-direction column
+  justify-content space-between
+</style>

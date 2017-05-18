@@ -1,4 +1,4 @@
-import '@/actions/init.js'
+import '@/actions/index.js'
 import {store} from 'san-store'
 import {router} from 'san-router'
 import App from '@/App.san'

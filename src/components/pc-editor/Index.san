@@ -1,6 +1,5 @@
 <template lang="pug">
 section.editor
-  div {{info.title}}
   sr-layout(layout="{{layout}}", isRoot="{{true}}", path="layout")
 </template>
 
