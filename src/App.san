@@ -1,5 +1,5 @@
 <template lang="pug">
-section
+section.full-size
   main-frame
     status-bar(slot="footer")
     title-bar(slot="header")
@@ -28,11 +28,17 @@ export default {
 @import '~@/config/variables.styl'
 html, body
   margin 0
+  width 100%
+  height 100%
 ul:not(.editor)
   margin 0
   padding 0
 li:not(.editor)
   list-style none
+.full-size
+  width 100%
+  height 100%
+  overflow hidden
 .hidden
   visibility hidden
 a:not(.editor)

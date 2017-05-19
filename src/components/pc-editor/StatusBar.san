@@ -52,7 +52,6 @@ $status-bar-height=18px
   color $s-text-color
   overflow hidden
   background $background
-  box-shadow 0 0 2px $s-text-color
   overflow-x auto
   overflow-y hidden
   white-space nowrap

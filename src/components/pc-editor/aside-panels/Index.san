@@ -1,7 +1,14 @@
 <template lang="pug">
 div.aside-panel
-  layout-panel
-  style-panel(san-if="activeLayout")
+  nav.tab
+    a(san-for="tab, index in tabs", on-click="switchTab(index)", class="fa fa-{{tab.icon}} {{index === activeTab ? 'active' : ''}}", title="{{tab.name}}")
+  div.tabs-container
+    div.title
+      div.title
+        b {{tabs[activeTab].name}}
+    div.tabs
+      layout-panel(san-if="activeTab === 0")
+      style-panel(san-if="stylePanelActive")
 </template>
 
 <script>
@@ -15,15 +22,60 @@ export default connect.san({
   components: {
     'layout-panel': LayoutPanel,
     'style-panel': StylePanel
+  },
+  switchTab (index) {
+    this.data.set('activeTab', index)
+  },
+  computed: {
+    stylePanelActive () {
+      const activeTab = this.data.get('activeTab')
+      const activeLayout = this.data.get('activeLayout')
+      return activeLayout && activeTab === 2
+    }
+  },
+  initData () {
+    return {
+      activeTab: 0,
+      tabs: [
+        {name: '组件树', icon: "list"},
+        {name: '快速设置', icon: "wrench"},
+        {name: '样式', icon: "css3"},
+        {name: '组件', icon: "cubes"},
+        {name: '插槽', icon: "window-restore"},
+        {name: '事件', icon: 'exclamation-circle'},
+        {name: '源码', icon: 'code'}
+      ]
+    }
   }
 })
 </script>
 
 <style lang="stylus">
+@import "~@/config/variables.styl"
 .aside-panel
   height 100%
   width 100%
   display flex
-  flex-direction column
   justify-content space-between
+  &>.tabs-container
+    &>.title
+      color white
+      font-size 14px
+      background $panel-color
+      color $text-color
+      padding 3px 5px
+  &>nav.tab
+    width 30px
+    background lighten($aside-color, 10)
+    a
+      width 30px
+      height 30px
+      display block
+      text-align center
+      line-height 30px
+      cursor pointer
+      &.active
+        background $aside-color
+  .tabs-container
+    flex 1
 </style>

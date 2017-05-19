@@ -20,8 +20,8 @@ export default connect.san({
 <style lang="stylus">
 @import '~@/config/variables.styl'
 $list-height=24px
+
 .layout-list
-  background #666
   height 100%
   overflow-x hidden
   overflow-y auto

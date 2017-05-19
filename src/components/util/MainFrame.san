@@ -1,15 +1,16 @@
 <template lang="pug">
-section.main-frame
+section.main-frame.full-size
   header
     slot(name="header")
   main
-    slot
+    nav
+      slot(name="nav")
+    section
+      slot
+    aside
+      slot(name="aside")
   footer
     slot(name="footer")
-  aside
-    slot(name="aside")
-  nav
-    slot(name="nav")
 </template>
 
 <style lang="stylus">
@@ -17,43 +18,42 @@ section.main-frame
 $top-height=30px
 $bottom-height=18px
 $left-width=30px
-$right-width=150px
+$right-width=180px
 .main-frame
-  &>header, &>footer, &>main, &>aside, &>nav
-    position fixed
-  &>header, &>footer, &>aside, &>nav
+  position fixed
+  top 0
+  bottom 0
+  left 0
+  right 0
+  overflow hidden
+  display flex
+  flex-direction column
+  &>header, &>footer, &>main
     user-select none
   &>header, &>footer
+    z-index 1
     color $text-color
     background $primary-color
-    left 0
-    right 0
+    box-shadow 0 0 3px $primary-color
   &>header
-    top 0
     height $top-height
     line-height $top-height
-    box-shadow 0 0 3px $primary-color
-    z-index 1
   &>footer
-    bottom 0
     height $bottom-height
-  &>aside, &>nav
-    color $text-color
-    background $aside-color
-    top $top-height
-    bottom $bottom-height
-    overflow-y auto
-    overflow-x hidden
-  &>aside
-    right 0
-    width $right-width
-  &>nav
-    left 0
-    width $left-width
   &>main
-    overflow auto
-    top $top-height
-    bottom $bottom-height
-    left $left-width
-    right $right-width
+    overflow hidden
+    display flex
+    flex 1
+    &>section
+      flex 1
+      overflow auto
+    &>aside, &>nav
+      color $text-color
+      background $aside-color
+      overflow-y auto
+      overflow-x hidden
+    &>aside
+      width $right-width
+    &>nav
+      width $left-width
 </style>
