@@ -1,18 +1,62 @@
 <template lang="pug">
 section.layout-list
-  layout-tree(layout="{{layout}}", activeLayout="{{activeLayout}}", path="layout", isRoot="{{!0}}")
+  //- layout-tree(layout="{{currentLayout}}", activeLayout="{{activeLayout}}", path="{{currentLayoutPath}}", isRoot="{{!0}}")
+  .current(on-dblclick="backToPrevious")
+    span {{currentLayout.id}}
+    .right
+      a(san-if="activeLayout", on-click="backToPrevious").fa.fa-level-up
+    .tools
+      a.fa.fa-trash(on-click="removeLayout")
+      a.fa.fa-cut
+      a.fa.fa-copy
+      a.fa.fa-paste
+      a.fa.fa-plus(on-click="addLayout")
+      a.fa.fa-pencil-square-o
+      a.fa.fa-chevron-left
+  ul
+    layout-item(san-for="children, index in currentLayout.children", layout="{{children}}", path="{{activeLayout}}.children[{{index}}]")
 </template>
 
 <script>
-import {connect} from 'san-store'
-import LayoutTree from './LayoutTree.san'
+import {store, connect} from 'san-store'
+import LayoutItem from './LayoutItem.san'
 
 export default connect.san({
   layout: 'pc.data.layout',
   activeLayout: 'pc.activeLayout'
 })({
+  computed: {
+    currentLayout () {
+      const activeLayout = this.data.get('activeLayout')
+      return store.getState(`pc.data.${activeLayout}`)
+    },
+    currentPath () {
+      const activeLayout = this.data.get('activeLayout')
+      return activeLayout
+    },
+  },
   components: {
-    'layout-tree': LayoutTree
+    'layout-item': LayoutItem
+  },
+  addLayout () {
+    store.dispatch('addLayout')
+  },
+  backToPrevious () {
+    const activeLayout = (this.data.get('activeLayout') || '').split('.')
+    console.log(activeLayout)
+    activeLayout.pop()
+    store.dispatch('activeLayoutForce', activeLayout.join('.'))
+  },
+  toggleLayout () {
+    this.activeLayout()
+    store.dispatch('toggleLayout')
+  },
+  removeLayout () {
+    store.dispatch('removeLayout')
+  },
+  activeLayout (e) {
+    e && e.stopPropagation()
+    store.dispatch('activeLayoutForce', this.data.get('path'))
   }
 })
 </script>
@@ -25,52 +69,29 @@ $list-height=24px
   height 100%
   overflow-x hidden
   overflow-y auto
-  .layout-tree
-    font-size 14px
-    .label
-      border-bottom 1px solid #444
-      line-height $list-height
-      height $list-height
-      position relative
-      padding 0 10px
-      .leaf
-        .expand
-          display inline-block
-          width 20px
-          text-align center
-        .content
-          overflow hidden
-          white-space nowrap
-          text-overflow ellipsis
-      .fa
-        margin-right 10px
-        cursor pointer
+  li, .current
+    cursor pointer
+    border-bottom 1px solid #666
+    line-height $list-height
+    height $list-height
+    position relative
+    padding 0 10px
+    transition all .3s
+    .right
+      position absolute
+      right 0
+      top 0
+      bottom 0
+    .fa
+      margin-right 10px
+      cursor pointer
+    .tools
+      background #666
+      display none
+
+    &:hover
+      height auto
       .tools
-        display none
-        position absolute
-        right 0
-        top 0
-        bottom 0
-      .edit
-        width 100%
-        height $list-height
-        input
-          outline 0
-          width 100%
-          height $list-height
-          border 0
-          margin 0
-          padding 0
-          display block
-          text-indent 20px
-          background transparent
-          color white
-          font-size 14px
-      &.active
-        background $highlight-color
-        .content
-          padding-right 16px
-        .tools
-          display block
+        display block
 </style>
 

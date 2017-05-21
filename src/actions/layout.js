@@ -11,9 +11,6 @@ store.addAction('activeLayout', (payload, {getState}) => builder().set('pc.activ
 // 强制激活区块
 store.addAction('activeLayoutForce', (payload, {getState}) => builder().set('pc.activeLayout', payload))
 
-store.addAction('setCurrentLayout', (payload, {getState}) => builder().set('pc.currentLayout', getState('pc.currentLayout.path') === payload.path ? {} : payload))
-store.addAction('setCurrentLayoutForce', (payload, {getState}) => builder().set('pc.currentLayout', payload))
-
 // 在被激活区块下添加子区块
 store.addAction('addLayout', (payload, {getState}) => {
   const activeLayout = getState('pc.activeLayout')

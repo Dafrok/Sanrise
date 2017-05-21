@@ -7,7 +7,7 @@ div.aside-panel
       div.title
         b {{tabs[activeTab].name}}
     div.tabs
-      layout-panel(san-if="activeTab === 0")
+      layout-panel(san-if="layoutPanelActive")
       style-panel(san-if="stylePanelActive")
 </template>
 
@@ -27,6 +27,11 @@ export default connect.san({
     this.data.set('activeTab', index)
   },
   computed: {
+    layoutPanelActive () {
+      const activeTab = this.data.get('activeTab')
+      const activeLayout = this.data.get('activeLayout')
+      return activeLayout && activeTab === 0
+    },
     stylePanelActive () {
       const activeTab = this.data.get('activeTab')
       const activeLayout = this.data.get('activeLayout')
