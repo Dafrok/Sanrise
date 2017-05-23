@@ -13,6 +13,6 @@ export class Layout {
     this.type = 0
     this.id = options.id || store.dispatch('genId') || `sr-${store.getState('pc.data.info.idOrder')}`
     this.children = options.children || []
-    this.style = options.style || {height: '100px'}
+    this.style = options.style || {height: '100px', position: 'relative'}
   }
 }

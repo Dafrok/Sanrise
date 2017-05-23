@@ -4,16 +4,18 @@ div.aside-panel
     a(san-for="tab, index in tabs", on-click="switchTab(index)", class="fa fa-{{tab.icon}} {{index === activeTab ? 'active' : ''}}", title="{{tab.name}}")
   div.tabs-container
     div.title
-      div.title
-        b {{tabs[activeTab].name}}
+      b {{tabs[activeTab].name}}
+    div.placeholder(san-if="!activeLayout") 未选择区块
     div.tabs
       layout-panel(san-if="layoutPanelActive")
       style-panel(san-if="stylePanelActive")
+      quick-set-panel(san-if="quickSetPanelActive")
 </template>
 
 <script>
 import LayoutPanel from './LayoutPanel.san'
 import StylePanel from './StylePanel.san'
+import QuickSetPanel from './QuickSetPanel.san'
 import {connect} from 'san-store'
 export default connect.san({
   layout: 'pc.data.layout',
@@ -21,7 +23,8 @@ export default connect.san({
 })({
   components: {
     'layout-panel': LayoutPanel,
-    'style-panel': StylePanel
+    'style-panel': StylePanel,
+    'quick-set-panel': QuickSetPanel
   },
   switchTab (index) {
     this.data.set('activeTab', index)
@@ -31,6 +34,11 @@ export default connect.san({
       const activeTab = this.data.get('activeTab')
       const activeLayout = this.data.get('activeLayout')
       return activeLayout && activeTab === 0
+    },
+    quickSetPanelActive () {
+      const activeTab = this.data.get('activeTab')
+      const activeLayout = this.data.get('activeLayout')
+      return activeLayout && activeTab === 1
     },
     stylePanelActive () {
       const activeTab = this.data.get('activeTab')
@@ -63,6 +71,12 @@ export default connect.san({
   display flex
   justify-content space-between
   &>.tabs-container
+    overflow hidden
+    &>.placeholder
+      color #999
+      text-align center
+      font-size 12px
+      line-height 3
     &>.title
       color white
       font-size 14px

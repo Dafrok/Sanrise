@@ -1,0 +1,37 @@
+<template lang="pug">
+section.quick-set-panel
+  ul
+    li
+      input(value="{=currentLayout.id=}")
+</template>
+
+<script>
+import {store, connect} from 'san-store'
+import {getCurrentLayout} from '@/base/util.js'
+import styleAlias, {order} from '@/config/style-alias.js'
+
+export default connect.san({
+  layout: 'pc.data.layout',
+  activeLayout: 'pc.activeLayout'
+})({
+  computed: {
+    currentLayout () {
+      const activeLayout = this.data.get('activeLayout')
+      const layout = this.data.get('layout')
+      return layout
+      // return getCurrentLayout(layout, activeLayout)
+    },
+    changeId (e) {
+      if (!e) {
+        return
+      }
+      e.preventDefault()
+      store.dispatch('updateLayoutId', {
+        path: this.data.get('path'),
+        value: this.data.get('id')
+      })
+      setTimeout(() => this.data.set('id', ''))
+    }
+  }
+})
+</script>

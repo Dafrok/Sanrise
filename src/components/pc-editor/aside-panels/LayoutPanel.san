@@ -2,17 +2,14 @@
 section.layout-list
   //- layout-tree(layout="{{currentLayout}}", activeLayout="{{activeLayout}}", path="{{currentLayoutPath}}", isRoot="{{!0}}")
   .current(on-dblclick="backToPrevious")
-    span {{currentLayout.id}}
+    .id {{currentLayout.id}}
     .right
       a(san-if="activeLayout", on-click="backToPrevious").fa.fa-level-up
-    .tools
-      a.fa.fa-trash(on-click="removeLayout")
+    .tools(on-click="stop($event)", on-dblclick="stop($event)")
       a.fa.fa-cut
       a.fa.fa-copy
       a.fa.fa-paste
       a.fa.fa-plus(on-click="addLayout")
-      a.fa.fa-pencil-square-o
-      a.fa.fa-chevron-left
   ul
     layout-item(san-for="children, index in currentLayout.children", layout="{{children}}", path="{{activeLayout}}.children[{{index}}]")
 </template>
@@ -28,6 +25,7 @@ export default connect.san({
   computed: {
     currentLayout () {
       const activeLayout = this.data.get('activeLayout')
+      this.data.get('layout')
       return store.getState(`pc.data.${activeLayout}`)
     },
     currentPath () {
@@ -38,12 +36,14 @@ export default connect.san({
   components: {
     'layout-item': LayoutItem
   },
+  stop (e) {
+    e.stopPropagation()
+  },
   addLayout () {
     store.dispatch('addLayout')
   },
   backToPrevious () {
     const activeLayout = (this.data.get('activeLayout') || '').split('.')
-    console.log(activeLayout)
     activeLayout.pop()
     store.dispatch('activeLayoutForce', activeLayout.join('.'))
   },
@@ -69,14 +69,21 @@ $list-height=24px
   height 100%
   overflow-x hidden
   overflow-y auto
+  .id, .tools
+    padding 0 30px 0 10px
+    overflow hidden
+    white-space nowrap
+    word-wrap break-word 
+    text-overflow ellipsis
   li, .current
     cursor pointer
     border-bottom 1px solid #666
     line-height $list-height
     height $list-height
     position relative
-    padding 0 10px
     transition all .3s
+    &:hover
+      background $highlight-color
     .right
       position absolute
       right 0
@@ -88,10 +95,8 @@ $list-height=24px
     .tools
       background #666
       display none
-
     &:hover
       height auto
       .tools
         display block
 </style>
-

@@ -1,5 +1,5 @@
 <template lang="pug">
-div.style-panel
+section.style-panel
   table
     tbody
       tr(san-for="style in styleList")
@@ -7,7 +7,10 @@ div.style-panel
           div {{style.value.name}}
         td
           div
-            input(value="{{currentLayout.style[style.key]}}", on-input="handleInput($event, style.key)")
+            input(san-if="style.value.type !== 'select'", value="{=currentLayout.style[style.key]=}")
+            select(san-if="style.value.type === 'select'", value="{=currentLayout.style[style.key]=}")
+              option(san-for="option in style.value.options", value="{{option.value}}") {{option.name}}
+              option(value="relative") test
 </template>
 
 <script>
@@ -19,27 +22,26 @@ export default connect.san({
   layout: 'pc.data.layout',
   activeLayout: 'pc.activeLayout'
 })({
-  initData: {
-    styleValues: {}
-  },
-  handleInput (e, key) {
-    store.dispatch('updateLayoutStyle', {
+  initData () {
+    const styleList = order.map(key => ({
       key,
-      value: e.target.value
-    })
+      value: styleAlias[key]
+    }))
+    return {
+      styleList
+    }
   },
+  // handleInput (e, key) {
+  //   store.dispatch('updateLayoutStyle', {
+  //     key,
+  //     value: e.target.value
+  //   })
+  // },
   computed: {
     currentLayout () {
       const activeLayout = this.data.get('activeLayout')
       const layout = this.data.get('layout')
       return getCurrentLayout(layout, activeLayout)
-    },
-    styleList () {
-      const ret = order.map(key => ({
-        key,
-        value: styleAlias[key]
-      }))
-      return ret
     }
   }
 })
@@ -63,11 +65,12 @@ export default connect.san({
         text-overflow ellipsis
         white-space nowrap
         overflow hidden
-      input
+      input, select
         width 100%
         height 100%
         border 0
         padding 0
         margin 0
         outline 0
+        background transparent
 </style>

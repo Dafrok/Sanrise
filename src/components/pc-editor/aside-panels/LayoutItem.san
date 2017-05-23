@@ -1,9 +1,15 @@
 <template lang="pug">
 li(on-dblclick="activeLayout($event)")
-  span(on-click="toggleLayout($event)")
-    a(san-if="layout.hidden").fa.fa-eye-slash
-    a(san-else).fa.fa-eye
-  span {{layout.id}}
+  .id
+    span(on-click="toggleLayout($event)")
+      a(san-if="layout.hidden").fa.fa-eye-slash
+      a(san-else).fa.fa-eye
+    span {{layout.id}}
+  .tools
+    a.fa.fa-trash(on-click="removeLayout")
+    a.fa.fa-cut
+    a.fa.fa-copy
+    a.fa.fa-paste
 </template>
 
 <script>
