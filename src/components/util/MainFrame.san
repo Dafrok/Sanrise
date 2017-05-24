@@ -15,7 +15,7 @@ section.main-frame.full-size
 
 <style lang="stylus">
 @import "~@/config/variables.styl"
-$top-height=30px
+$top-height=40px
 $bottom-height=18px
 $left-width=30px
 $right-width=180px

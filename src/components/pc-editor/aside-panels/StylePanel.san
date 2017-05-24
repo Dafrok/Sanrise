@@ -10,12 +10,10 @@ section.style-panel
             input(san-if="style.value.type !== 'select'", value="{=currentLayout.style[style.key]=}")
             select(san-if="style.value.type === 'select'", value="{=currentLayout.style[style.key]=}")
               option(san-for="option in style.value.options", value="{{option.value}}") {{option.name}}
-              option(value="relative") test
 </template>
 
 <script>
 import {store, connect} from 'san-store'
-import {getCurrentLayout} from '@/base/util.js'
 import styleAlias, {order} from '@/config/style-alias.js'
 
 export default connect.san({
@@ -38,11 +36,6 @@ export default connect.san({
   //   })
   // },
   computed: {
-    currentLayout () {
-      const activeLayout = this.data.get('activeLayout')
-      const layout = this.data.get('layout')
-      return getCurrentLayout(layout, activeLayout)
-    }
   }
 })
 </script>

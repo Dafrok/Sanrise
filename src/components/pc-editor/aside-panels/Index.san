@@ -5,10 +5,10 @@ div.aside-panel
   div.tabs-container
     div.title
       b {{tabs[activeTab].name}}
-    div.placeholder(san-if="!activeLayout") 未选择区块
+    div.placeholder(san-if="!activeLayout") 未选择布局块
     div.tabs
       layout-panel(san-if="layoutPanelActive")
-      style-panel(san-if="stylePanelActive")
+      style-panel(san-if="stylePanelActive", currentLayout="{{currentLayout}}")
       quick-set-panel(san-if="quickSetPanelActive")
 </template>
 
@@ -17,6 +17,8 @@ import LayoutPanel from './LayoutPanel.san'
 import StylePanel from './StylePanel.san'
 import QuickSetPanel from './QuickSetPanel.san'
 import {connect} from 'san-store'
+import {getCurrentLayout} from '@/base/util.js'
+
 export default connect.san({
   layout: 'pc.data.layout',
   activeLayout: 'pc.activeLayout'
@@ -30,6 +32,12 @@ export default connect.san({
     this.data.set('activeTab', index)
   },
   computed: {
+    currentLayout () {
+      const activeLayout = this.data.get('activeLayout')
+      const layout = this.data.get('layout')
+      return store.getState(`pc.data.${activeLayout}`)
+      // return getCurrentLayout(layout, activeLayout)
+    },
     layoutPanelActive () {
       const activeTab = this.data.get('activeTab')
       const activeLayout = this.data.get('activeLayout')
@@ -50,7 +58,7 @@ export default connect.san({
     return {
       activeTab: 0,
       tabs: [
-        {name: '组件树', icon: "list"},
+        {name: '布局', icon: "list"},
         {name: '快速设置', icon: "wrench"},
         {name: '样式', icon: "css3"},
         {name: '组件', icon: "cubes"},

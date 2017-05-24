@@ -2,6 +2,8 @@ import {store} from 'san-store'
 import {builder} from 'san-update'
 import {Layout} from '@/base/factory.js'
 
+global.store = store
+
 // 生成区块 ID
 store.addAction('genId', (payload, {getState}) => builder().set('pc.data.info.idOrder', getState('pc.data.info.idOrder') + 1))
 

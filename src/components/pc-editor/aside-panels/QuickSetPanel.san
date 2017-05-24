@@ -3,6 +3,11 @@ section.quick-set-panel
   ul
     li
       input(value="{=currentLayout.id=}")
+    li
+      select(value="")
+        option 左对齐
+        option 居中对齐
+        option 右对齐
 </template>
 
 <script>
