@@ -2,12 +2,7 @@
 section.quick-set-panel
   ul
     li
-      input(value="{=currentLayout.id=}")
-    li
-      select(value="")
-        option 左对齐
-        option 居中对齐
-        option 右对齐
+      input(value="{{currentLayout.id}}", on-blur="changeId($event)")
 </template>
 
 <script>
@@ -19,23 +14,20 @@ export default connect.san({
   layout: 'pc.data.layout',
   activeLayout: 'pc.activeLayout'
 })({
+  changeId (e) {
+    if (!e) {
+      return
+    }
+    store.dispatch('updateLayoutId', {
+      path: this.data.get('activeLayout'),
+      value: e.target.value
+    })
+  },
   computed: {
     currentLayout () {
       const activeLayout = this.data.get('activeLayout')
       const layout = this.data.get('layout')
       return layout
-      // return getCurrentLayout(layout, activeLayout)
-    },
-    changeId (e) {
-      if (!e) {
-        return
-      }
-      e.preventDefault()
-      store.dispatch('updateLayoutId', {
-        path: this.data.get('path'),
-        value: this.data.get('id')
-      })
-      setTimeout(() => this.data.set('id', ''))
     }
   }
 })
