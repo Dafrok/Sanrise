@@ -55,7 +55,4 @@ store.addAction('updateLayoutId', (payload, {getState}) => {
 })
 
 // 更新区块样式
-store.addAction('updateLayoutStyle', (payload, {getState}) => {
-  console.log(getState(`pc.data.${getState('pc.activeLayout')}.style`), payload.key)
-  return builder().set(`pc.data.${getState('pc.activeLayout')}.style.${payload.key}`, payload.value)
-})
+store.addAction('updateLayoutStyle', (payload, {getState}) => builder().set(`pc.data.${getState('pc.activeLayout')}.style.${payload.key}`, payload.value))
