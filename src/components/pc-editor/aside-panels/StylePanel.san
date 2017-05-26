@@ -7,8 +7,8 @@ section.style-panel
           div {{style.value.name}}
         td
           div
-            input(san-if="style.value.type !== 'select'", value="{=currentLayout.style[style.key]=}")
-            select(san-if="style.value.type === 'select'", value="{=currentLayout.style[style.key]=}")
+            input(san-if="style.value.type !== 'select'", value="{{currentLayout.style[style.key]}}", on-blur="handleInput($event)")
+            select(san-if="style.value.type === 'select'", value="{{currentLayout.style[style.key]}}", on-change="handleInput($event)")
               option(san-for="option in style.value.options", value="{{option.value}}") {{option.name}}
 </template>
 
@@ -29,12 +29,12 @@ export default connect.san({
       styleList
     }
   },
-  // handleInput (e, key) {
-  //   store.dispatch('updateLayoutStyle', {
-  //     key,
-  //     value: e.target.value
-  //   })
-  // },
+  handleInput (e, key) {
+    store.dispatch('updateLayoutStyle', {
+      key,
+      value: e.target.value
+    })
+  },
   computed: {
   }
 })
