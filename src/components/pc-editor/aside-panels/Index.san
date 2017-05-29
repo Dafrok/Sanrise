@@ -79,7 +79,8 @@ export default connect.san({
   display flex
   justify-content space-between
   &>.tabs-container
-    overflow hidden
+    overflow-y auto
+    overflow-x hidden
     &>.placeholder
       color #999
       text-align center
@@ -105,4 +106,25 @@ export default connect.san({
         background $aside-color
   .tabs-container
     flex 1
+  .form-control
+    font-size 12px
+    .label, .input
+      box-sizing border-box
+      text-overflow ellipsis
+      white-space nowrap
+      overflow hidden
+    .label
+      padding 2px 5px
+      background-color $text-color
+    .input
+      &>input, &>select
+        box-sizing border-box
+        width 100%
+        height 24px
+        line-height 24px
+        border 0
+        margin 0
+        outline 0
+        background transparent
+        padding 0 5px
 </style>
