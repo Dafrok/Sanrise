@@ -1,15 +1,12 @@
 <template lang="pug">
 section.style-panel
-  table
-    tbody
-      tr(san-for="style in styleList")
-        td
-          div {{style.value.name}}
-        td
-          div
-            input(san-if="style.value.type !== 'select'", value="{{currentLayout.style[style.key]}}", on-blur="handleInput($event)")
-            select(san-if="style.value.type === 'select'", value="{{currentLayout.style[style.key]}}", on-change="handleInput($event)")
-              option(san-for="option in style.value.options", value="{{option.value}}") {{option.name}}
+  ul
+    li.form-control(san-for="style in styleList")
+      div.label {{style.value.name}}
+      div.input
+        input(san-if="style.value.type !== 'select'", value="{{currentLayout.style[style.key]}}", on-blur="handleInput($event)")
+        select(san-if="style.value.type === 'select'", value="{{currentLayout.style[style.key]}}", on-change="handleInput($event)")
+          option(san-for="option in style.value.options", value="{{option.value}}") {{option.name}}
 </template>
 
 <script>
@@ -43,27 +40,10 @@ export default connect.san({
 <style lang="stylus">
 @import "~@/config/variables.styl"
 .style-panel
-  font-size 12px
-  table
-    border-collapse: collapse;
-    td
+  ul
+    li
       background white
-      width 50%
-      border 1px solid $primary-color
+      border-bottom 1px solid $highlight-color-gray
       color $primary-color
-      &:first-child
-        background-color $text-color
-      div
-        width 100%
-        text-overflow ellipsis
-        white-space nowrap
-        overflow hidden
-      input, select
-        width 100%
-        height 100%
-        border 0
-        padding 0
-        margin 0
-        outline 0
-        background transparent
+      font-size 0
 </style>
