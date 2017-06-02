@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "font-awesome": "^4.7.0",
-    "san": "^3.1.0-alpha.1",
+    "san": "^3.1.0-beta.1",
     "san-router": "^1.0.3",
     "san-store": "^1.0.1",
     "san-update": "^2.1.0"
