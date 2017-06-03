@@ -1,12 +1,12 @@
 <template lang="pug">
 section.style-panel
   ul
-    li.form-control(san-for="style in styleList")
+    li.form-control(s-for="style in styleList")
       div.label {{style.value.name}}
       div.input
-        input(san-if="style.value.type !== 'select'", value="{{currentLayout.style[style.key]}}", on-blur="handleInput($event)")
-        select(san-if="style.value.type === 'select'", value="{{currentLayout.style[style.key]}}", on-change="handleInput($event)")
-          option(san-for="option in style.value.options", value="{{option.value}}") {{option.name}}
+        input(s-if="style.value.type !== 'select'", value="{{currentLayout.style[style.key]}}", on-blur="handleInput($event, style.key)")
+        select(s-if="style.value.type === 'select'", value="{{currentLayout.style[style.key]}}", on-change="handleInput($event, style.key)")
+          option(s-for="option in style.value.options", value="{{option.value}}") {{option.name}}
 </template>
 
 <script>

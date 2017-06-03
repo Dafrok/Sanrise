@@ -1,28 +1,28 @@
 <template lang="pug">
 .layout-tree
   .label(class="{{path === activeLayout ? 'active' : ''}}", on-dblclick="edit($event)", on-click="activeLayout($event)")
-    .leaf(san-if="!showTools")
-      form.edit(san-if="editable && path === activeLayout", on-submit="submit($event)")
+    .leaf(s-if="!showTools")
+      form.edit(s-if="editable && path === activeLayout", on-submit="submit($event)")
         input(value="{= id =}", on-blur="submit($event)")
       .content(san-else)
         span.expand
-          span(san-if="isRoot").fa.fa-chevron-left
+          span(s-if="isRoot").fa.fa-chevron-left
           span(san-else, on-click="toggleLayout")
-            span(san-if="layout.hidden").fa.fa-eye-slash
+            span(s-if="layout.hidden").fa.fa-eye-slash
             span(san-else).fa.fa-eye
         span {{layout.id}}
-    .tools(san-if="!editable", on-mouseenter="toggleTools(!0)", on-mouseleave="toggleTools(!1)")
-      span(san-if="showTools")
+    .tools(s-if="!editable", on-mouseenter="toggleTools(!0)", on-mouseleave="toggleTools(!1)")
+      span(s-if="showTools")
         a.fa.fa-trash(on-click="removeLayout")
         a.fa.fa-cut
         a.fa.fa-copy
         a.fa.fa-paste
         a.fa.fa-plus(on-click="addLayout")
         a.fa.fa-pencil-square-o
-      span.fa.fa-ellipsis-h(san-if="!showTools")
-  ul.list(san-if="layout.children.length")
-    li(san-for="item, index in layout.children")
-      layout-tree(san-if="item.type === 0", layout="{{item}}", path="{{path}}.children[{{index}}]", activeLayout="{{activeLayout}}")
+      span.fa.fa-ellipsis-h(s-if="!showTools")
+  ul.list(s-if="layout.children.length")
+    li(s-for="item, index in layout.children")
+      layout-tree(s-if="item.type === 0", layout="{{item}}", path="{{path}}.children[{{index}}]", activeLayout="{{activeLayout}}")
 </template>
 
 <script>

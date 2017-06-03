@@ -30,6 +30,7 @@ export default connect.san(mapStates, mapActions)({
       height 100%
       position relative
     &.active
+      cursor move
       &>.helper
         &::before
           content ''

@@ -1,7 +1,7 @@
 <template lang="pug">
-div.layout(data-id="{{layout.id}}", class="{{componentClass}}", style="{{componentStyle}}", on-click="activeLayout($event)")
+div.layout(draggable="{{isActive}}", data-id="{{layout.id}}", class="{{componentClass}}", style="{{componentStyle}}", on-click="activeLayout($event)", on-dragstart="getPosition($event)", on-dragend="setPosition($event)", on-drag="previewPosition($event)")
   .helper
-    sr-layout(san-if="layout.type === 0", san-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
+    sr-layout(s-if="layout.type === 0", s-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
 </template>
 
 <script>
@@ -21,9 +21,52 @@ export default connect.san(mapStates)({
     e.stopPropagation()
     store.dispatch('activeLayout', this.data.get('path'))
   },
+  getPosition (e) {
+    e.stopPropagation()
+    const {draggingStates} = this
+    const node = e.target
+    // e.dataTransfer.setDragImage('', 0, 0)
+    const currentStyle = getComputedStyle(node)
+    const top = parseInt(currentStyle.top, 10) || 0
+    const left = parseInt(currentStyle.left, 10) || 0
+    draggingStates.width = parseInt(currentStyle.width, 10) || 0
+    draggingStates.height = parseInt(currentStyle.height, 10) || 0
+    draggingStates.originX = node.offsetLeft - left
+    draggingStates.originY = node.offsetTop - top
+    draggingStates.offsetX = e.pageX - node.offsetLeft
+    draggingStates.offsetY = e.pageY - node.offsetTop
+    draggingStates.target = node
+  },
+  setPosition (e) {
+    e.stopPropagation()
+    const {draggingStates} = this
+    const target = draggingStates.target
+    if (e.pageX && e.pageY) {
+      store.dispatch('updateLayoutStyle', {
+        key: 'left',
+        value: parseInt(target.style.left) + 'px'
+      })
+      store.dispatch('updateLayoutStyle', {
+        key: 'top',
+        value: parseInt(target.style.top) + 'px'
+      })
+    }
+  },
+  previewPosition (e) {
+    e.stopPropagation()
+    const {draggingStates} = this
+    const target = draggingStates.target
+    e.pageX && e.pageY && (target => {
+        target.style.left = e.pageX - draggingStates.offsetX - draggingStates.originX + 'px'
+        target.style.top = e.pageY - draggingStates.offsetY - draggingStates.originY + 'px'
+    })(target)
+  },
   computed: {
+    isActive () {
+      return this.data.get('activeLayout') === this.data.get('path')
+    },
     componentClass () {
-      return this.data.get('activeLayout') === this.data.get('path') ? 'active' : ''
+      return this.data.get('isActive') ? 'active' : ''
     },
     componentStyle () {
       const style = this.data.get('layout.style') || {}
@@ -33,6 +76,18 @@ export default connect.san(mapStates)({
       }
       ret += this.data.get('layout.hidden') ? 'visibility: hidden;' : ''
       return ret
+    }
+  },
+  attached () {
+    this.draggingStates = {
+      parentPath: [0],
+      originX: 0,
+      originY: 0,
+      offsetX: 0,
+      offsetY: 0,
+      width: 0,
+      height: 0,
+      neighbours: []
     }
   }
 })

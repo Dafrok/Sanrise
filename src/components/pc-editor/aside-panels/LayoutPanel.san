@@ -4,14 +4,14 @@ section.layout-list
   .current(on-dblclick="backToPrevious")
     .id {{currentLayout.id}}
     .right
-      a(san-if="activeLayout", on-click="backToPrevious").fa.fa-level-up
+      a(s-if="activeLayout", on-click="backToPrevious").fa.fa-level-up
     .tools(on-click="stop($event)", on-dblclick="stop($event)")
       a.fa.fa-cut
       a.fa.fa-copy
       a.fa.fa-paste
       a.fa.fa-plus(on-click="addLayout")
   ul
-    layout-item(san-for="children, index in currentLayout.children", layout="{{children}}", path="{{activeLayout}}.children[{{index}}]")
+    layout-item(s-for="children, index in currentLayout.children", layout="{{children}}", path="{{activeLayout}}.children[{{index}}]")
 </template>
 
 <script>

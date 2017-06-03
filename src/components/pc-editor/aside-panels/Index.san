@@ -1,15 +1,15 @@
 <template lang="pug">
 div.aside-panel
   nav.tab
-    a(san-for="tab, index in tabs", on-click="switchTab(index)", class="fa fa-{{tab.icon}} {{index === activeTab ? 'active' : ''}}", title="{{tab.name}}")
+    a(s-for="tab, index in tabs", on-click="switchTab(index)", class="fa fa-{{tab.icon}} {{index === activeTab ? 'active' : ''}}", title="{{tab.name}}")
   div.tabs-container
     div.title
       b {{tabs[activeTab].name}}
-    div.placeholder(san-if="!activeLayout") 未选择布局块
+    div.placeholder(s-if="!activeLayout") 未选择布局块
     div.tabs
-      layout-panel(san-if="layoutPanelActive")
-      style-panel(san-if="stylePanelActive", currentLayout="{{currentLayout}}")
-      quick-set-panel(san-if="quickSetPanelActive")
+      layout-panel(s-if="layoutPanelActive")
+      style-panel(s-if="stylePanelActive", currentLayout="{{currentLayout}}")
+      quick-set-panel(s-if="quickSetPanelActive")
 </template>
 
 <script>
@@ -107,6 +107,10 @@ export default connect.san({
   .tabs-container
     flex 1
   .form-control
+    background white
+    border-bottom 1px solid $highlight-color-gray
+    color $primary-color
+    font-size 0
     font-size 12px
     .label, .input
       box-sizing border-box
