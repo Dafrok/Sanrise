@@ -8,23 +8,23 @@ section.quick-set-panel
     li.form-control
       div.label 对齐方式
       div.input
-        select
-          option 左上对齐
-          option 右上对齐
-          option 左下对齐
-          option 右下对齐
-          option 居中对齐
+        select(value="{{currentLayout.axis}}", on-change="changeAxis($event)")
+          option(s-for="axis in settings.axis", value="{{axis.value}}") {{axis.name}}
 </template>
 
 <script>
 import {store, connect} from 'san-store'
 import {getCurrentLayout} from '@/base/util.js'
 import styleAlias, {order} from '@/config/style-alias.js'
+import settings from '@/config/quick-set.js'
 
 export default connect.san({
   layout: 'pc.data.layout',
   activeLayout: 'pc.activeLayout'
 })({
+  initData () {
+    return {settings}
+  },
   changeId (e) {
     if (!e) {
       return
@@ -34,12 +34,9 @@ export default connect.san({
       value: e.target.value
     })
   },
-  computed: {
-    currentLayout () {
-      const activeLayout = this.data.get('activeLayout')
-      const layout = this.data.get('layout')
-      return layout
-    }
+  changeAxis (e) {
+    e.stopPropagation()
+    store.dispatch('setLayoutAxis', e.target.value)
   }
 })
 </script>

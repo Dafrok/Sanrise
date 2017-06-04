@@ -9,7 +9,7 @@ div.aside-panel
     div.tabs
       layout-panel(s-if="layoutPanelActive")
       style-panel(s-if="stylePanelActive", currentLayout="{{currentLayout}}")
-      quick-set-panel(s-if="quickSetPanelActive")
+      quick-set-panel(s-if="quickSetPanelActive", currentLayout="{{currentLayout}}")
 </template>
 
 <script>
