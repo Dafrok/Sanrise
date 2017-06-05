@@ -1,13 +1,17 @@
 <template lang="pug">
-div.layout(draggable="{{isActive}}", data-id="{{layout.id}}", class="{{componentClass}}", style="{{componentStyle}}", on-click="activeLayout($event)", on-dragstart="getPosition($event)", on-dragend="setPosition($event)", on-drag="previewPosition($event)")
+div.layout(draggable="{{isActive}}", data-id="{{layout.id}}", class="{{componentClass}}", style="{{componentStyle}}", on-click="activeLayout($event)", on-dragstart="getPosition($event, axis)", on-dragend="setPosition($event, axis)", on-drag="previewPosition($event, axis)")
   .helper
-    sr-layout(s-if="layout.type === 0", s-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
+    .resizer
+      div(s-for="resizer in settings.resizers", draggable="{{isActive}}", class="rs-{{resizer}}", on-dragstart="getSize($event, axis, resizer)", on-drag="previewSize($event, axis, resizer)", on-dragend="setSize($event, axis, resizer)")
+    .wrapper
+      sr-layout(s-if="layout.type === 0", s-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
 </template>
 
 <script>
 import {store, connect} from 'san-store'
 import kebab from 'kebab-case'
 import Layout from '@/components/pc-editor/Layout.san'
+import settings from '@/config/quick-set.js'
 
 const mapStates = {
   activeLayout: 'pc.activeLayout'
@@ -17,49 +21,126 @@ export default connect.san(mapStates)({
   components: {
     'sr-layout': 'self'
   },
+  initData () {
+    return {
+      settings
+    }
+  },
   activeLayout (e) {
     e.stopPropagation()
     store.dispatch('activeLayout', this.data.get('path'))
   },
-  getPosition (e) {
+  getPosition (e, axis) {
     e.stopPropagation()
-    const {draggingStates} = this
+    const {movingStates} = this
     const node = e.target
     // e.dataTransfer.setDragImage('', 0, 0)
     const currentStyle = getComputedStyle(node)
     const top = parseInt(currentStyle.top, 10) || 0
     const left = parseInt(currentStyle.left, 10) || 0
-    draggingStates.width = parseInt(currentStyle.width, 10) || 0
-    draggingStates.height = parseInt(currentStyle.height, 10) || 0
-    draggingStates.originX = node.offsetLeft - left
-    draggingStates.originY = node.offsetTop - top
-    draggingStates.offsetX = e.pageX - node.offsetLeft
-    draggingStates.offsetY = e.pageY - node.offsetTop
-    draggingStates.target = node
+    const bottom = parseInt(currentStyle.bottom, 10) || 0
+    const right = parseInt(currentStyle.right, 10) || 0
+    movingStates.width = parseInt(currentStyle.width, 10) || 0
+    movingStates.height = parseInt(currentStyle.height, 10) || 0
+
+    movingStates.originX = axis.l ? left : right
+    movingStates.originY = axis.t ? top : bottom
+    movingStates.offsetX = e.pageX
+    movingStates.offsetY = e.pageY
+    
+    movingStates.target = node
   },
-  setPosition (e) {
+  setPosition (e, axis) {
     e.stopPropagation()
-    const {draggingStates} = this
-    const target = draggingStates.target
-    if (e.pageX && e.pageY) {
-      store.dispatch('updateLayoutStyle', {
-        key: 'left',
-        value: parseInt(target.style.left) + 'px'
-      })
-      store.dispatch('updateLayoutStyle', {
-        key: 'top',
-        value: parseInt(target.style.top) + 'px'
-      })
+    if (!e.pageX || !e.pageY) {
+      return
     }
+    const {movingStates} = this
+    const target = movingStates.target
+    store.dispatch('updateLayoutStyle', {
+      key: 'left',
+      value: axis.l ? parseInt(target.style.left) + 'px' : 'auto'
+    })
+    store.dispatch('updateLayoutStyle', {
+      key: 'top',
+      value: axis.t ? parseInt(target.style.top) + 'px' : 'auto'
+    })
+    store.dispatch('updateLayoutStyle', {
+      key: 'right',
+      value: axis.r ? parseInt(target.style.right) + 'px' : 'auto'
+    })
+    store.dispatch('updateLayoutStyle', {
+      key: 'bottom',
+      value: axis.b ? parseInt(target.style.bottom) + 'px' : 'auto'
+    })
   },
-  previewPosition (e) {
+  previewPosition (e, axis) {
     e.stopPropagation()
-    const {draggingStates} = this
-    const target = draggingStates.target
-    e.pageX && e.pageY && (target => {
-        target.style.left = e.pageX - draggingStates.offsetX - draggingStates.originX + 'px'
-        target.style.top = e.pageY - draggingStates.offsetY - draggingStates.originY + 'px'
-    })(target)
+    if (!e.pageX || !e.pageY) {
+      return
+    }
+    const {movingStates} = this
+    const target = movingStates.target
+    target.style.left = axis.l ? movingStates.originX + e.pageX - movingStates.offsetX + 'px' : 'auto'
+    target.style.top = axis.t ? movingStates.originY + e.pageY - movingStates.offsetY + 'px' : 'auto'
+    target.style.right = axis.r ? movingStates.originX + movingStates.offsetX - e.pageX + 'px' : 'auto'
+    target.style.bottom = axis.b ? movingStates.originY + movingStates.offsetY - e.pageY + 'px' : 'auto'
+  },
+  getSize (e, axis, resizer) {
+    e.stopPropagation()
+    const {sizingStates} = this
+    const node = e.target.parentNode.parentNode.parentNode
+    // e.dataTransfer.setDragImage('', 0, 0)
+    const currentStyle = getComputedStyle(node)
+    const top = parseInt(currentStyle.top, 10) || 0
+    const left = parseInt(currentStyle.left, 10) || 0
+    const bottom = parseInt(currentStyle.bottom, 10) || 0
+    const right = parseInt(currentStyle.right, 10) || 0
+
+    sizingStates.width = parseInt(currentStyle.width, 10) || 0
+    sizingStates.height = parseInt(currentStyle.height, 10) || 0
+
+    sizingStates.originX = axis.l ? left : right
+    sizingStates.originY = axis.t ? top : bottom
+    sizingStates.offsetX = e.pageX
+    sizingStates.offsetY = e.pageY
+
+    sizingStates.target = node
+  },
+  setSize (e, axis, resizer) {
+    e.stopPropagation()
+  },
+  previewSize (e, axis, resizer) {
+    e.stopPropagation()
+    if (!e.pageX || !e.pageY) {
+      return
+    }
+    const {sizingStates} = this
+    const target = sizingStates.target
+    if (~resizer.indexOf('r')) {
+      target.style.width = axis.r ? sizingStates.width - e.pageX + sizingStates.offsetX + 'px' : sizingStates.width + e.pageX - sizingStates.offsetX + 'px'
+      if (axis.r) {
+        target.style.right = sizingStates.originX - e.pageX + sizingStates.offsetX + 'px'
+      }
+    }
+    if (~resizer.indexOf('b')) {
+      target.style.height = axis.b ? sizingStates.height - e.pageY + sizingStates.offsetY + 'px' : sizingStates.height + e.pageY - sizingStates.offsetY + 'px'
+      if (axis.b) {
+        target.style.bottom = sizingStates.originY - e.pageY + sizingStates.offsetY + 'px'
+      }
+    }
+    if (~resizer.indexOf('l')) {
+      target.style.width = axis.l ? sizingStates.width - e.pageX + sizingStates.offsetX + 'px' : sizingStates.width + e.pageX - sizingStates.offsetX + 'px'
+      if (axis.l) {
+        target.style.left = sizingStates.originX + e.pageX - sizingStates.offsetX + 'px'
+      }
+    }
+    if (~resizer.indexOf('t')) {
+      target.style.height = axis.t ? sizingStates.height - e.pageY + sizingStates.offsetY + 'px' : sizingStates.height + e.pageY - sizingStates.offsetY + 'px'
+      if (axis.t) {
+        target.style.top = sizingStates.originY + e.pageY - sizingStates.offsetY + 'px'
+      }
+    }
   },
   computed: {
     isActive () {
@@ -76,10 +157,17 @@ export default connect.san(mapStates)({
       }
       ret += this.data.get('layout.hidden') ? 'visibility: hidden;' : ''
       return ret
+    },
+    axis () {
+      const str = this.data.get('layout').axis || 'tl'
+      return str.split('').reduce((obj, key) => {
+        obj[key] = true
+        return obj
+      }, {})
     }
   },
   attached () {
-    this.draggingStates = {
+    this.movingStates = {
       parentPath: [0],
       originX: 0,
       originY: 0,
@@ -89,6 +177,7 @@ export default connect.san(mapStates)({
       height: 0,
       neighbours: []
     }
+    this.sizingStates = {}
   }
 })
 </script>

@@ -22,16 +22,68 @@ export default connect.san(mapStates, mapActions)({
 <style lang="stylus">
 @import "~@/config/variables.styl"
 .editor
+  transform translate(0, 0)
+  min-height 100%
   .layout
     pointer-events auto
     &>.helper
-      pointer-events none
       width 100%
       height 100%
       position relative
+      z-index 1
+      &>.wrapper
+        pointer-events none
+      &>.resizer
+        display none
+        div
+          position absolute
+          border 1px solid black
+          background white
+          width 5px
+          height 5px
+          z-index 999999
+          margin auto
+        .rs-lt
+          top 0
+          left 0
+          cursor nw-resize
+        .rs-rt
+          top 0
+          right 0
+          cursor ne-resize
+        .rs-lb
+          bottom 0
+          left 0
+          cursor sw-resize
+        .rs-rb
+          bottom 0
+          right 0
+          cursor se-resize
+        .rs-t
+          top 0
+          left 0
+          right 0
+          cursor n-resize
+        .rs-b
+          bottom 0
+          left 0
+          right 0
+          cursor s-resize
+        .rs-l
+          top 0
+          bottom 0
+          left 0
+          cursor w-resize
+        .rs-r
+          top 0
+          bottom 0
+          right 0
+          cursor e-resize
     &.active
       cursor move
       &>.helper
+        &>.resizer
+          display block
         &::before
           content ''
           border 2px dashed $highlight-color

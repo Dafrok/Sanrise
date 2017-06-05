@@ -1,5 +1,5 @@
 {
-  "name": "sanshine",
+  "name": "sanrise",
   "version": "1.0.0",
   "main": "index.js",
   "private": true,
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Dafrok/Sanshine.git"
+    "url": "git+https://github.com/Dafrok/Sanrise.git"
   },
   "author": "Dafrok <o.o@mug.dog>",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/Dafrok/Sanshine/issues"
+    "url": "https://github.com/Dafrok/Sanrise/issues"
   },
-  "homepage": "https://github.com/Dafrok/Sanshine#readme",
+  "homepage": "https://github.com/Dafrok/Sanrise#readme",
   "description": "",
   "devDependencies": {
     "babel-core": "^6.24.1",
@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "font-awesome": "^4.7.0",
-    "san": "^3.1.0-beta.1",
+    "san": "^3.1.0-beta.3",
     "san-router": "^1.0.3",
     "san-store": "^1.0.1",
     "san-update": "^2.1.0"

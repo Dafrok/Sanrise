@@ -56,3 +56,15 @@ store.addAction('updateLayoutId', (payload, {getState}) => {
 
 // 更新区块样式
 store.addAction('updateLayoutStyle', (payload, {getState}) => builder().set(`pc.data.${getState('pc.activeLayout')}.style.${payload.key}`, payload.value))
+
+// 更新区块坐标轴
+store.addAction('updateLayoutAxis', (payload, {getState}) => builder().set(`pc.data.${getState('pc.activeLayout')}.axis`, payload))
+
+// 更新区块坐标轴
+store.addAction('setLayoutAxis', (payload, {getState, dispatch}) => {
+  dispatch('updateLayoutStyle', {key: 'top', value: ~payload.indexOf('t') ? '0px' : 'auto'})
+  dispatch('updateLayoutStyle', {key: 'left', value: ~payload.indexOf('l') ? '0px' : 'auto'})
+  dispatch('updateLayoutStyle', {key: 'bottom', value: ~payload.indexOf('b') ? '0px' : 'auto'})
+  dispatch('updateLayoutStyle', {key: 'right', value: ~payload.indexOf('r') ? '0px' : 'auto'})
+  dispatch('updateLayoutAxis', payload)
+})
