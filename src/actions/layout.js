@@ -68,3 +68,9 @@ store.addAction('setLayoutAxis', (payload, {getState, dispatch}) => {
   dispatch('updateLayoutStyle', {key: 'right', value: ~payload.indexOf('r') ? '0px' : 'auto'})
   dispatch('updateLayoutAxis', payload)
 })
+
+store.addAction('updateLayoutUnit', (payload, {getState}) => builder().set(`pc.data.${getState('pc.activeLayout')}.unit`, payload))
+
+store.addAction('setLayoutUnit', (payload, {getState, dispatch}) => {
+  dispatch('updateLayoutUnit', payload)
+})

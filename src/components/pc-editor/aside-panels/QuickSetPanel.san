@@ -10,6 +10,11 @@ section.quick-set-panel
       div.input
         select(value="{{currentLayout.axis}}", on-change="changeAxis($event)")
           option(s-for="axis in settings.axis", value="{{axis.value}}") {{axis.name}}
+    li.form-control
+      div.label 尺寸单位
+      div.input
+        select(value="{{currentLayout.unit}}", on-change="changeUnit($event)")
+          option(s-for="unit in settings.unit", value="{{unit.value}}") {{unit.name}}
 </template>
 
 <script>
@@ -37,6 +42,10 @@ export default connect.san({
   changeAxis (e) {
     e.stopPropagation()
     store.dispatch('setLayoutAxis', e.target.value)
+  },
+  changeUnit (e) {
+    e.stopPropagation()
+    store.dispatch('setLayoutUnit', e.target.value)
   }
 })
 </script>
