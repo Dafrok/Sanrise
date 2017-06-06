@@ -16,5 +16,15 @@ export default {
       value: 'rb',
       name: '右下对齐'
     }
+  ],
+  unit: [
+    {
+      value: 'px',
+      name: '像素'
+    },
+    {
+      value: '%',
+      name: '百分比'
+    }
   ]
 }
