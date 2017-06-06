@@ -69,8 +69,14 @@ store.addAction('setLayoutAxis', (payload, {getState, dispatch}) => {
   dispatch('updateLayoutAxis', payload)
 })
 
-store.addAction('updateLayoutUnit', (payload, {getState}) => builder().set(`pc.data.${getState('pc.activeLayout')}.unit`, payload))
+store.addAction('updateLayoutPosUnit', (payload, {getState}) => builder().set(`pc.data.${getState('pc.activeLayout')}.unit.pos`, payload))
 
-store.addAction('setLayoutUnit', (payload, {getState, dispatch}) => {
-  dispatch('updateLayoutUnit', payload)
+store.addAction('setLayoutPosUnit', (payload, {getState, dispatch}) => {
+  dispatch('updateLayoutPosUnit', payload)
+})
+
+store.addAction('updateLayoutSizeUnit', (payload, {getState}) => builder().set(`pc.data.${getState('pc.activeLayout')}.unit.size`, payload))
+
+store.addAction('setLayoutSizeUnit', (payload, {getState, dispatch}) => {
+  dispatch('updateLayoutSizeUnit', payload)
 })

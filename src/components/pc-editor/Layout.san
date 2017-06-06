@@ -79,12 +79,17 @@ export default connect.san(mapStates)({
     }
     const {movingStates} = this
     const {target, originX, originY, offsetX, offsetY} = movingStates
+    const unit = this.data.get('layout').unit.pos
+    const parentStyle = getComputedStyle(target.parentNode)
 
     movingAttrs.forEach(key => {
       const info = axisInfo[key]
       const ratio = info.ratio[0] || info.ratio[1]
       const tag = info.ratio[0] ? 'X' : 'Y'
-      target.style[key] = axis[info.alias] && movingStates['origin' + tag] + ratio * e['page' + tag] - ratio * movingStates['offset' + tag] + 'px'
+      const dir = info.ratio[0] ? 'width' : 'height'
+      target.style[key] = axis[info.alias] && (unit === '%'
+        ? (movingStates['origin' + tag] + ratio * e['page' + tag] - ratio * movingStates['offset' + tag]) / parseInt(parentStyle[dir]) * 100 + unit
+        : movingStates['origin' + tag] + ratio * e['page' + tag] - ratio * movingStates['offset' + tag] + unit)
     })
   },
   getSize (e, axis, resizer) {
@@ -125,7 +130,10 @@ export default connect.san(mapStates)({
       return
     }
     const {sizingStates} = this
+    // const unitPos = this.data.get('layout').unit.pos
+    // const unitSize = this.data.get('layout').unit.pos
     const target = sizingStates.target
+    // const parentStyle = getComputedStyle(target.parentNode)
 
     movingAttrs.forEach(key => {
       const info = axisInfo[key]

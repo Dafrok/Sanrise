@@ -13,7 +13,12 @@ section.quick-set-panel
     li.form-control
       div.label 尺寸单位
       div.input
-        select(value="{{currentLayout.unit}}", on-change="changeUnit($event)")
+        select(value="{{currentLayout.unit.size}}", on-change="changeSizeUnit($event)")
+          option(s-for="unit in settings.unit", value="{{unit.value}}") {{unit.name}}
+    li.form-control
+      div.label 位置单位
+      div.input
+        select(value="{{currentLayout.unit.pos}}", on-change="changePosUnit($event)")
           option(s-for="unit in settings.unit", value="{{unit.value}}") {{unit.name}}
 </template>
 
@@ -43,9 +48,13 @@ export default connect.san({
     e.stopPropagation()
     store.dispatch('setLayoutAxis', e.target.value)
   },
-  changeUnit (e) {
+  changeSizeUnit (e) {
     e.stopPropagation()
-    store.dispatch('setLayoutUnit', e.target.value)
+    store.dispatch('setLayoutSizeUnit', e.target.value)
+  },
+  changePosUnit (e) {
+    e.stopPropagation()
+    store.dispatch('setLayoutPosUnit', e.target.value)
   }
 })
 </script>
