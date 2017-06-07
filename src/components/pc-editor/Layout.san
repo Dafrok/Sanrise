@@ -131,10 +131,10 @@ export default connect.san(mapStates)({
       return
     }
     const {sizingStates} = this
-    // const unitPos = this.data.get('layout').unit.pos
-    // const unitSize = this.data.get('layout').unit.pos
+    const unitPos = this.data.get('layout').unit.pos
+    const unitSize = this.data.get('layout').unit.pos
     const target = sizingStates.target
-    // const parentStyle = getComputedStyle(target.parentNode)
+    const parentStyle = getComputedStyle(target.parentNode)
 
     movingAttrs.forEach(key => {
       const info = axisInfo[key]
@@ -143,13 +143,14 @@ export default connect.san(mapStates)({
       const dir = info.ratio[0] ? 'width' : 'height'
       if (~resizer.indexOf(info.alias)) {
         const size = sizingStates[dir] - ratio * e['page' + tag] + ratio * sizingStates['offset' + tag]
+        const parentDir = parseInt(parentStyle[dir])
         if (size < 0) {
           target.style[dir] = 0
         } else {
-          target.style[dir] = size + 'px'
+          target.style[dir] = (unitSize === '%' ? size / parentDir * 100 : size) + unitSize
           if (axis[info.alias]) {
             const offset = sizingStates['origin' + tag] + ratio * e['page' + tag] - ratio * sizingStates['offset' + tag]
-            target.style[key] = offset + 'px'
+            target.style[key] = (unitPos === '%' ? offset / parentDir * 100 : offset) + unitPos
           }
         }
       }
