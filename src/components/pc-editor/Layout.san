@@ -1,6 +1,7 @@
 <template lang="pug">
 div.layout(draggable="{{isActive}}", data-id="{{layout.id}}", class="{{componentClass}}", style="{{componentStyle}}", on-click="activeLayout($event)", on-dragstart="getPosition($event, axis)", on-dragend="setPosition($event, axis)", on-drag="previewPosition($event, axis)")
   .helper
+    .border
     .resizer
       div(s-for="resizer in settings.resizers", draggable="{{isActive}}", class="rs-{{resizer}}", on-dragstart="getSize($event, axis, resizer)", on-drag="previewSize($event, axis, resizer)", on-dragend="setSize($event, axis, resizer)")
     .wrapper
@@ -141,9 +142,15 @@ export default connect.san(mapStates)({
       const tag = info.ratio[0] ? 'X' : 'Y'
       const dir = info.ratio[0] ? 'width' : 'height'
       if (~resizer.indexOf(info.alias)) {
-        target.style[dir] = sizingStates[dir] - ratio * e['page' + tag] + ratio * sizingStates['offset' + tag] + 'px'
-        if (axis[info.alias]) {
-          target.style[key] = sizingStates['origin' + tag] + ratio * e['page' + tag] - ratio * sizingStates['offset' + tag] + 'px'
+        const size = sizingStates[dir] - ratio * e['page' + tag] + ratio * sizingStates['offset' + tag]
+        if (size < 0) {
+          target.style[dir] = 0
+        } else {
+          target.style[dir] = size + 'px'
+          if (axis[info.alias]) {
+            const offset = sizingStates['origin' + tag] + ratio * e['page' + tag] - ratio * sizingStates['offset' + tag]
+            target.style[key] = offset + 'px'
+          }
         }
       }
     })

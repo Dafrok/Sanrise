@@ -82,9 +82,10 @@ export default connect.san(mapStates, mapActions)({
     &.active
       cursor move
       &>.helper
-        &>.resizer
+        &>.resizer, &>.border
           display block
-        &::before
+        &>.border
+          z-index 1
           content ''
           border 2px dashed $highlight-color
           position absolute
