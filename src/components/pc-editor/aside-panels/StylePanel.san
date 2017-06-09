@@ -36,14 +36,3 @@ export default connect.san({
   }
 })
 </script>
-
-<style lang="stylus">
-@import "~@/config/variables.styl"
-.style-panel
-  ul
-    li
-      background white
-      border-bottom 1px solid $highlight-color-gray
-      color $primary-color
-      font-size 0
-</style>

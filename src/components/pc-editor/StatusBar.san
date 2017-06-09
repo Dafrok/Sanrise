@@ -32,7 +32,7 @@ export default connect.san({path: 'pc.activeLayout'})({
           layout: store.getState(`pc.data.${layoutPath}`)
         })
         return arr
-    }, []) : []
+      }, []) : []
     }
   }
 })

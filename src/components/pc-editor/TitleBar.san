@@ -3,20 +3,8 @@ section.pc-title-bar
   .title {{title}}
   .toolbar
     a
-      span 源码
-      span.fa.fa-code
-    a
       span 发布
       span.fa.fa-share-square-o
-    a
-      span 设置
-      span.fa.fa-cog
-    a
-      span 预览
-      span.fa.fa-internet-explorer
-    a
-      span 打开
-      span.fa.fa-folder-open
     a
       span 保存
       span.fa.fa-floppy-o

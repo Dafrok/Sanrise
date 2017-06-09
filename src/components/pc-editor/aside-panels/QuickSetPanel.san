@@ -6,6 +6,15 @@ section.quick-set-panel
       div.input
         input(value="{{currentLayout.id}}", on-blur="changeId($event)")
     li.form-control
+      div.label 链接地址
+      div.input
+        input(value="{{currentLayout.link.href}}", on-blur="changeLinkHref($event)")
+    li.form-control
+      div.label 链接打开方式
+      div.input
+        select(value="{{currentLayout.link.target}}", on-change="changeLinkTarget($event)")
+          option(s-for="target in settings.link.target", value="{{target.value}}") {{target.name}}
+    li.form-control
       div.label 对齐方式
       div.input
         select(value="{{currentLayout.axis}}", on-change="changeAxis($event)")
@@ -55,6 +64,14 @@ export default connect.san({
   changePosUnit (e) {
     e.stopPropagation()
     store.dispatch('setLayoutPosUnit', e.target.value)
+  },
+  changeLinkHref (e) {
+    e.stopPropagation()
+    store.dispatch('setLayoutLink', {href: e.target.value})
+  },
+  changeLinkTarget (e) {
+    e.stopPropagation()
+    store.dispatch('setLayoutLink', {target: e.target.value})
   }
 })
 </script>

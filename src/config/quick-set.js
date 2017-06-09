@@ -26,5 +26,11 @@ export default {
       value: '%',
       name: '百分比'
     }
-  ]
+  ],
+  link: {
+    target: [
+      {name: '空白页', value: '_blank'},
+      {name: '本页', value: '_self'}
+    ]
+  }
 }
