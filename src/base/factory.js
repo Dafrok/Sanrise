@@ -13,11 +13,12 @@ export class Layout {
     this.type = 0
     this.id = options.id || store.dispatch('genId') || `sr-${store.getState('pc.data.info.idOrder')}`
     this.children = options.children || []
+    this.events = []
     this.unit = {
       pos: 'px',
       size: 'px'
     }
     this.axis = 'lt'
-    this.style = options.style || {height: '100px', position: 'absolute', width: '100px', background: 'red'}
+    this.style = options.style || {height: '100px', position: 'absolute', width: '100px'}
   }
 }

@@ -1,11 +1,11 @@
 <template lang="pug">
-li(on-dblclick="activeLayout($event)")
+li(on-dblclick="activeLayout($event)", on-click="toggleTools")
   .id
     span(on-click="toggleLayout($event)")
       a(s-if="layout.hidden").fa.fa-eye-slash
       a(s-else).fa.fa-eye
     span {{layout.id}}
-  .tools
+  .tools(s-if="showTools")
     a.fa.fa-trash(on-click="removeLayout")
     a.fa.fa-cut
     a.fa.fa-copy
@@ -17,22 +17,22 @@ import {store} from 'san-store'
 export default {
   initData () {
     return {
-      showTools: false,
-      editable: false
+      showTools: false
     }
   },
   toggleTools (bool) {
-    this.data.set('showTools', bool)
+    const isShow = !this.data.get('showTools')
+    isShow && this.fire('openTools')
+    this.data.set('showTools', !isShow)
   },
   addLayout () {
     store.dispatch('addLayout')
   },
   toggleLayout (e) {
     e.stopPropagation()
-    store.dispatch('toggleLayout')
+    store.dispatch('toggleLayout', this.data.get('path'))
   },
   activeLayout (e) {
-    e.stopPropagation()
     store.dispatch('activeLayoutForce', this.data.get('path'))
   },
   removeLayout () {

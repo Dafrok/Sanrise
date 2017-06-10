@@ -79,11 +79,10 @@ $list-height=24px
     cursor pointer
     border-bottom 1px solid #666
     line-height $list-height
-    height $list-height
     position relative
     transition all .3s
     &:hover
-      background $highlight-color
+      background $active-color
     .right
       position absolute
       right 0
@@ -94,9 +93,4 @@ $list-height=24px
       cursor pointer
     .tools
       background #666
-      display none
-    &:hover
-      height auto
-      .tools
-        display block
 </style>

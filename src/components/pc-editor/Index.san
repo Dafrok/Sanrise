@@ -1,20 +1,24 @@
 <template lang="pug">
 section.editor
-  sr-layout(layout="{{layout}}", isRoot="{{true}}", path="layout")
+  sr-layout(s-if="panel === 'layout'", layout="{{layout}}", isRoot="{{true}}", path="layout")
+  source-code(s-if="panel === 'code'")
 </template>
 
 <script>
 import {connect} from 'san-store'
 import Layout from './Layout.san'
+import SourceCode from './SourceCode.san'
 
 const mapStates = {
   info: 'pc.data.info',
-  layout: 'pc.data.layout'
+  layout: 'pc.data.layout',
+  panel: 'pc.panel'
 }
 const mapActions = {}
 export default connect.san(mapStates, mapActions)({
   components: {
-    'sr-layout': Layout
+    'sr-layout': Layout,
+    'source-code': SourceCode
   }
 })
 </script>
@@ -32,6 +36,7 @@ export default connect.san(mapStates, mapActions)({
       position relative
       z-index 1
       &>.wrapper
+        display block
         pointer-events none
       &>.resizer
         display none
@@ -87,7 +92,7 @@ export default connect.san(mapStates, mapActions)({
         &>.border
           z-index 1
           content ''
-          border 2px dashed $highlight-color
+          border 2px dashed $active-color
           position absolute
           top 0
           bottom 0
@@ -96,12 +101,12 @@ export default connect.san(mapStates, mapActions)({
           animation active-layout 1s infinite
 @keyframes active-layout
   0%
-    border-color $highlight-color
+    border-color $active-color
     box-shadow 0 0 3px white inset
   50%
     border-color $primary-color
     box-shadow 0 0 3px black inset
   100%
-    border-color $highlight-color
+    border-color $active-color
     box-shadow 0 0 3px white inset
 </style>

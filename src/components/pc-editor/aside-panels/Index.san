@@ -1,71 +1,88 @@
 <template lang="pug">
 div.aside-panel
   nav.tab
-    a(s-for="tab, index in tabs", on-click="switchTab(index)", class="fa fa-{{tab.icon}} {{index === activeTab ? 'active' : ''}}", title="{{tab.name}}")
+    a(s-for="tab, index in tabs", on-click="switchTab(tab.name)", class="fa fa-{{tab.icon}} {{tab.name === activeTab ? 'active' : ''}}", title="{{tab.name}}")
   div.tabs-container
     div.title
-      b {{tabs[activeTab].name}}
-    div.placeholder(s-if="!activeLayout") 未选择布局块
+      b {{activeTab}}
+    div.left.placeholder(s-if="!activeLayout") 未选取布局块。请点击视图编辑面板选择布局块或 <a on-click="selectRootLayout"><i>选取根节点</i></a> 。
     div.tabs
       layout-panel(s-if="layoutPanelActive")
       style-panel(s-if="stylePanelActive", currentLayout="{{currentLayout}}")
       quick-set-panel(s-if="quickSetPanelActive", currentLayout="{{currentLayout}}")
+      code-panel(s-if="codePanelActive", currentLayout="{{currentLayout}}", panel="{{panel}}")
 </template>
 
 <script>
 import LayoutPanel from './LayoutPanel.san'
 import StylePanel from './StylePanel.san'
 import QuickSetPanel from './QuickSetPanel.san'
-import {connect} from 'san-store'
+import {store, connect} from 'san-store'
 import {getCurrentLayout} from '@/base/util.js'
 
 export default connect.san({
   layout: 'pc.data.layout',
-  activeLayout: 'pc.activeLayout'
+  activeLayout: 'pc.activeLayout',
+  panel: 'pc.panel'
 })({
   components: {
     'layout-panel': LayoutPanel,
     'style-panel': StylePanel,
     'quick-set-panel': QuickSetPanel
   },
-  switchTab (index) {
-    this.data.set('activeTab', index)
+  switchTab (name) {
+    this.data.set('activeTab', name)
+  },
+  selectRootLayout () {
+    store.dispatch('activeLayoutForce', 'layout')
   },
   computed: {
-    currentLayout () {
-      const activeLayout = this.data.get('activeLayout')
-      const layout = this.data.get('layout')
-      return store.getState(`pc.data.${activeLayout}`)
-      // return getCurrentLayout(layout, activeLayout)
-    },
-    layoutPanelActive () {
+    tabs () {
+      const panel = this.data.get('panel')
       const activeTab = this.data.get('activeTab')
-      const activeLayout = this.data.get('activeLayout')
-      return activeLayout && activeTab === 0
-    },
-    quickSetPanelActive () {
-      const activeTab = this.data.get('activeTab')
-      const activeLayout = this.data.get('activeLayout')
-      return activeLayout && activeTab === 1
-    },
-    stylePanelActive () {
-      const activeTab = this.data.get('activeTab')
-      const activeLayout = this.data.get('activeLayout')
-      return activeLayout && activeTab === 2
-    }
-  },
-  initData () {
-    return {
-      activeTab: 0,
-      tabs: [
+      const tabs = [
         {name: '布局', icon: "list"},
         {name: '快速设置', icon: "wrench"},
         {name: '样式', icon: "css3"},
         {name: '组件', icon: "cubes"},
         {name: '插槽', icon: "window-restore"},
-        {name: '事件', icon: 'exclamation-circle'},
-        {name: '源码', icon: 'code'}
+        {name: '事件', icon: 'exclamation-circle'}
+        // {name: '源码', icon: 'code'}
       ]
+      switch (panel) {
+        default:
+          return tabs
+      }
+    },
+    currentLayout () {
+      const activeLayout = this.data.get('activeLayout')
+      const layout = this.data.get('layout')
+      return store.getState(`pc.data.${activeLayout}`)
+    },
+    layoutPanelActive () {
+      const activeTab = this.data.get('activeTab')
+      const activeLayout = this.data.get('activeLayout')
+      return activeLayout && activeTab === '布局'
+    },
+    quickSetPanelActive () {
+      const activeTab = this.data.get('activeTab')
+      const activeLayout = this.data.get('activeLayout')
+      return activeLayout && activeTab === '快速设置'
+    },
+    stylePanelActive () {
+      const activeTab = this.data.get('activeTab')
+      const activeLayout = this.data.get('activeLayout')
+      return activeLayout && activeTab === '样式'
+    },
+    codePanelActive () {
+      const activeTab = this.data.get('activeTab')
+      const activeLayout = this.data.get('activeLayout')
+      return activeLayout && activeTab === '源码'
+    },
+  },
+  initData () {
+    return {
+      activeTab: '布局',
     }
   }
 })
@@ -81,11 +98,14 @@ export default connect.san({
   &>.tabs-container
     overflow-y auto
     overflow-x hidden
-    &>.placeholder
+    .placeholder
       color #999
       text-align center
       font-size 12px
-      line-height 3
+      line-height 1.5
+      padding 10px
+      &.left
+        text-align left
     &>.title
       color white
       font-size 14px
@@ -106,22 +126,22 @@ export default connect.san({
         background $aside-color
   .tabs-container
     flex 1
+    position relative
   .form-control
-    background white
-    border-bottom 1px solid $highlight-color-gray
     color $primary-color
     font-size 0
     font-size 12px
+    margin 5px 8px
     .label, .input
       box-sizing border-box
       text-overflow ellipsis
       white-space nowrap
       overflow hidden
-    .label
-      padding 2px 5px
-      background-color $text-color
+      color $text-color
     .input
+      background-color lighten($aside-color, 20)
       &>input, &>select
+        color $text-color
         box-sizing border-box
         width 100%
         height 24px
@@ -131,4 +151,18 @@ export default connect.san({
         outline 0
         background transparent
         padding 0 5px
+  .btn
+    text-align center
+    font-size 12px
+    background $panel-color
+    line-height 2
+    display block
+    margin 10px 15px
+    &:hover
+      background lighten($panel-color, 10)
+      color white
+    &.is-primary
+      background $active-color
+      &:hover
+        background lighten($active-color, 10)
 </style>

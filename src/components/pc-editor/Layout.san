@@ -1,14 +1,17 @@
 <template lang="pug">
-div.layout(draggable="{{isActive}}", data-id="{{layout.id}}", class="{{componentClass}}", style="{{componentStyle}}", on-click="activeLayout($event)", on-dragstart="getPosition($event, axis)", on-dragend="setPosition($event, axis)", on-drag="previewPosition($event, axis)")
+div.layout(draggable="{{isActive}}", data-id="{{layout.id}}", class="{{componentClass}}", style="{{componentStyle}}", on-click="active($event)", on-contextmenu="contextMenu($event)", on-dragstart="getPosition($event, axis)", on-dragend="setPosition($event, axis)", on-drag="previewPosition($event, axis)")
   .helper
     .border
     .resizer
       div(s-for="resizer in settings.resizers", draggable="{{isActive}}", class="rs-{{resizer}}", on-dragstart="getSize($event, axis, resizer)", on-drag="previewSize($event, axis, resizer)", on-dragend="setSize($event, axis, resizer)")
-    .wrapper
+    a.wrapper(s-if="layout.link.href")
+      sr-layout(s-if="layout.type === 0", s-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
+    .wrapper(s-else)
       sr-layout(s-if="layout.type === 0", s-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
 </template>
 
 <script>
+import san from 'san'
 import {store, connect} from 'san-store'
 import kebab from 'kebab-case'
 import Layout from '@/components/pc-editor/Layout.san'
@@ -37,9 +40,13 @@ export default connect.san(mapStates)({
       settings
     }
   },
-  activeLayout (e) {
-    e.stopPropagation()
+  active (e) {
+    e && e.stopPropagation()
     store.dispatch('activeLayout', this.data.get('path'))
+  },
+  contextMenu (e) {
+    e.preventDefault()
+    store.dispatch('activeLayoutForce', this.data.get('path'))
   },
   getPosition (e, axis) {
     e.stopPropagation()
@@ -121,7 +128,7 @@ export default connect.san(mapStates)({
     sizingAttrs.forEach(key => {
       store.dispatch('updateLayoutStyle', {
         key,
-        value: (axis[key[0]] || key === 'width' || key === 'height') && target.style[key]
+        value: (axis[key[0]] || key === 'width' || key === 'height') && target.style[key] || ''
       })
     })
   },
@@ -167,7 +174,13 @@ export default connect.san(mapStates)({
       const style = this.data.get('layout.style') || {}
       let ret = ''
       for (const key in style) {
-        ret += `${kebab(key)}: ${style[key]};`
+        switch (key) {
+          case 'backgroundImage':
+            ret += `${kebab(key)}: url(${style[key]});`
+            break
+          default:
+            ret += `${kebab(key)}: ${style[key]};`
+        }
       }
       ret += this.data.get('layout.hidden') ? 'visibility: hidden;' : ''
       return ret
@@ -181,6 +194,15 @@ export default connect.san(mapStates)({
     }
   },
   attached () {
+    // 重置拖动状态
+    const activeLayoout = this.data.get('activeLayout')
+    const currentLayout = this.data.get('path')
+    if (activeLayoout === currentLayout) {
+      san.nextTick(() => {
+        store.dispatch('activeLayout', null)
+        store.dispatch('activeLayoutForce', currentLayout)
+      })
+    }
     this.movingStates = {}
     this.sizingStates = {}
   }
