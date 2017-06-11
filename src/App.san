@@ -4,6 +4,7 @@ section.full-size
     status-bar(slot="footer")
     title-bar(slot="header")
     aside-panel(slot="aside")
+    nav-panel(slot="nav", panel="{{panel}}")
     pc-editor
 </template>
 
@@ -12,20 +13,28 @@ import PcEditor from '@/components/pc-editor/Index.san'
 import TitleBar from '@/components/pc-editor/TitleBar.san'
 import StatusBar from '@/components/pc-editor/StatusBar.san'
 import AsidePanel from '@/components/pc-editor/aside-panels/Index.san'
+import NavPanel from '@/components/pc-editor/nav-panels/Index.san'
 import MainFrame from '@/components/util/MainFrame.san'
-export default {
+import {connect} from 'san-store'
+export default connect.san({
+  panel: 'pc.panel'
+})({
   components: {
     'main-frame': MainFrame,
     'pc-editor': PcEditor,
     'title-bar': TitleBar,
     'status-bar': StatusBar,
-    'aside-panel': AsidePanel
+    'aside-panel': AsidePanel,
+    'nav-panel': NavPanel
   }
-}
+})
 </script>
 
 <style lang="stylus">
 @import '~@/config/variables.styl'
+
+*::-webkit-scrollbar
+  display none
 html, body
   margin 0
   width 100%
@@ -42,7 +51,8 @@ li:not(.editor)
 .hidden
   visibility hidden
 a:not(.editor)
+  cursor pointer
   color $text-color
   &:hover
-    color $highlight-color-gray
+    color $highlight-color
 </style>

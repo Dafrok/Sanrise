@@ -1,0 +1,40 @@
+<template lang="pug">
+section.panel-list
+  nav.tab
+    a(s-for="tab, index in tabs", on-click="switchPanel(tab.panel)", class="fa fa-{{tab.icon}} {{tab.panel === panel ? 'active' : ''}}", title="{{tab.name}}")
+</template>
+<script>
+import {store} from 'san-store'
+export default {
+  initData () {
+    return {
+      tabs: [
+        {name: '视图', icon: "list-alt", panel: 'layout'},
+        {name: '源码', icon: "code",  panel: 'code'},
+        {name: '设置', icon: "cog",  panel: 'settings'},
+        {name: '打开', icon: "folder-open",  panel: 'open'},
+        {name: '预览', icon: "internet-explorer",  panel: 'preview'}
+      ]
+    }
+  },
+  switchPanel (panel) {
+    store.dispatch('switchEditorPanel', panel)
+  }
+}
+</script>
+
+<style lang="stylus">
+@import "~@/config/variables.styl"
+.panel-list
+  &>nav.tab
+    width 30px
+    a
+      width 30px
+      height 30px
+      display block
+      text-align center
+      line-height 30px
+      cursor pointer
+      &.active
+        background $active-color
+</style>

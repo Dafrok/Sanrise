@@ -2,7 +2,7 @@ import {store} from 'san-store'
 import {builder} from 'san-update'
 import {Layout} from '@/base/factory.js'
 
-global.store = store
+// global.store = store
 
 // 生成区块 ID
 store.addAction('genId', (payload, {getState}) => builder().set('pc.data.info.idOrder', getState('pc.data.info.idOrder') + 1))
@@ -19,16 +19,21 @@ store.addAction('addLayout', (payload, {getState}) => {
   return activeLayout && builder().push(`pc.data.${activeLayout}.children`, new Layout())
 })
 
+store.addAction('updateLayout', (payload, {getState}) => {
+  const targetPath = payload.path || getState('pc.activeLayout')
+  const path = `pc.data${targetPath ? '.' + targetPath : ''}`
+  return builder().set(path, payload.value)
+})
+
 // 隐藏 / 显示被激活区块
 store.addAction('toggleLayout', (payload, {getState}) => {
-  const path = `pc.data.${getState('pc.activeLayout')}.hidden`
-  const state = getState(path)
-  return builder().set(path, !state)
+  const path = `pc.data.${payload || getState('pc.activeLayout')}.hidden`
+  return builder().set(path, !getState(path))
 })
 
 // 删除被激活区块
 store.addAction('removeLayout', (payload, {getState, dispatch}) => {
-  const activeLayout = (getState('pc.activeLayout') || '').split('.')
+  const activeLayout = (payload || getState('pc.activeLayout') || '').split('.')
   const children = activeLayout.splice(-1)
   const index = (children[0].match(/children\[(.+)\]/) || 0)[1]
   dispatch('activeLayout', null)
@@ -38,18 +43,19 @@ store.addAction('removeLayout', (payload, {getState, dispatch}) => {
 // 查空 / 查重后更改区块 ID
 store.addAction('updateLayoutId', (payload, {getState}) => {
   const layout = getState('pc.data.layout')
-  const walkLayout = (layout, callback) => {
-    let res = callback(layout)
-    !res && layout.children && layout.children.forEach(item => res = res || walkLayout(item, callback))
+  const target = getState(`pc.data.${payload.path}`)
+  const walkLayout = (layout, callback, target) => {
+    let res = layout !== target && callback(layout)
+    !res && layout.children && layout.children.forEach(item => res = (res || walkLayout(item, callback, target)))
     return res
   }
   if (!payload.value) {
-    // id 为空时执行
+    // id 为空时重置 id
     return
   }
-  if (walkLayout(layout, layout => layout.id === payload.value)) {
-    // id 重复时执行
-    return
+  if (walkLayout(layout, layout => layout.id === payload.value, target)) {
+    // id 重复时，为 id 插入 '-copy' 后缀
+    return builder().set(`pc.data.${payload.path}.id`, `${payload.value}-copy`)
   }
   return builder().set(`pc.data.${payload.path}.id`, payload.value)
 })
@@ -62,10 +68,7 @@ store.addAction('updateLayoutAxis', (payload, {getState}) => builder().set(`pc.d
 
 // 更新区块坐标轴
 store.addAction('setLayoutAxis', (payload, {getState, dispatch}) => {
-  dispatch('updateLayoutStyle', {key: 'top', value: ~payload.indexOf('t') ? '0px' : 'auto'})
-  dispatch('updateLayoutStyle', {key: 'left', value: ~payload.indexOf('l') ? '0px' : 'auto'})
-  dispatch('updateLayoutStyle', {key: 'bottom', value: ~payload.indexOf('b') ? '0px' : 'auto'})
-  dispatch('updateLayoutStyle', {key: 'right', value: ~payload.indexOf('r') ? '0px' : 'auto'})
+  ['left', 'right', 'top', 'bottom'].forEach(key => dispatch('updateLayoutStyle', {key, value: ~payload.indexOf(key[0]) ? '0px' : 'auto'}))
   dispatch('updateLayoutAxis', payload)
 })
 
@@ -79,4 +82,13 @@ store.addAction('updateLayoutSizeUnit', (payload, {getState}) => builder().set(`
 
 store.addAction('setLayoutSizeUnit', (payload, {getState, dispatch}) => {
   dispatch('updateLayoutSizeUnit', payload)
+})
+
+store.addAction('setLayoutLink', (payload = {}, {getState}) => {
+  const {href, target} = payload
+  const path = `pc.data.${getState('pc.activeLayout')}.link`
+  return builder().set(path, {
+    href: getState(path + '.href') || href,
+    target: target ? target : '_blank'
+  })
 })

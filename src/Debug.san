@@ -1,0 +1,15 @@
+<template lang="pug">
+ul
+  li(s-if="0 === index", s-for="item, index in list")
+</template>
+
+<script>
+export default {
+  initData () {
+    return {
+      list: ['foo', 'bar', 'baz'],
+      activeIndex: 0
+    }
+  }
+}
+</script>

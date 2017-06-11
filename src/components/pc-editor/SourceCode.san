@@ -1,0 +1,121 @@
+<template lang="pug">
+section.source-code
+  .text-field.cm-s-mbo
+    textarea(value="{{sourceCode}}")
+</template>
+
+<script>
+import {store, connect} from 'san-store'
+import beautify from 'json-beautify'
+import CodeMirror from 'codemirror'
+
+const mapStates = {
+  layout: 'pc.data.layout',
+  activeLayout: 'pc.activeLayout'
+}
+const mapActions = {}
+
+export default connect.san(mapStates, mapActions)({
+  computed: {
+    currentLayout () {
+      const activeLayout = this.data.get('activeLayout')
+      const layout = this.data.get('layout')
+      return store.getState(`pc.data${activeLayout ? '.' + activeLayout : ''}`)
+    },
+    sourceCode () {
+      return beautify(this.data.get('currentLayout'), null, 2, 80)
+    }
+  },
+  save () {
+    console.log(JSON.parse(this.codeMirror.getValue()))
+    store.dispatch('updateLayout', {value: JSON.parse(this.codeMirror.getValue())})
+  },
+  close () {
+    store.dispatch('switchEditorPanel', 'layout')
+  },
+  attached () {
+    global.mi = this.codeMirror = CodeMirror.fromTextArea(this.el.querySelector('textarea'), {
+      lineNumbers: true
+    })
+    this.watch('currentLayout', val => this.codeMirror.setValue(this.data.get('sourceCode')))
+  },
+  detached () {
+    this.save()
+  }
+})
+</script>
+
+<style lang="stylus">
+@import "~@/config/variables.styl"
+.source-code
+  position absolute
+  top 0
+  bottom 0
+  right 0
+  left 0
+  // .tools
+  //   background lighten($panel-color, 5)
+  //   height 26px
+  //   line-height 26px
+  //   font-size 14px
+  //   .save
+  //     background lighten($panel-color, 15)
+  //     padding 0 10px
+  //     position absolute
+  //     top 0
+  //     left 0
+  //   .close
+  //     position absolute
+  //     right 0
+  //     top 0
+  //     bottom 0
+  //     width 26px
+  //     text-align center
+  .text-field
+    position absolute
+    top 0
+    bottom 0
+    left 0
+    right 0
+    .CodeMirror
+      width 100%
+      height 100%
+
+/****************************************************************/
+/*   Based on mbonaci's Brackets mbo theme                      */
+/*   https://github.com/mbonaci/global/blob/master/Mbo.tmTheme  */
+/*   Create your own: http://tmtheme-editor.herokuapp.com       */
+/****************************************************************/
+
+.cm-s-mbo .CodeMirror { background: #2c2c2c; color: #ffffec; }
+.cm-s-mbo div.CodeMirror-selected { background: #716C62; }
+.cm-s-mbo .CodeMirror-line::selection, .cm-s-mbo .CodeMirror-line > span::selection, .cm-s-mbo .CodeMirror-line > span > span::selection { background: rgba(113, 108, 98, .99); }
+.cm-s-mbo .CodeMirror-line::-moz-selection, .cm-s-mbo .CodeMirror-line > span::-moz-selection, .cm-s-mbo .CodeMirror-line > span > span::-moz-selection { background: rgba(113, 108, 98, .99); }
+.cm-s-mbo .CodeMirror-gutters { background: #4e4e4e; border-right: 0px; }
+.cm-s-mbo .CodeMirror-guttermarker { color: white; }
+.cm-s-mbo .CodeMirror-guttermarker-subtle { color: grey; }
+.cm-s-mbo .CodeMirror-linenumber { color: #dadada; }
+.cm-s-mbo .CodeMirror-cursor { border-left: 1px solid #ffffec; }
+
+.cm-s-mbo span.cm-comment { color: #95958a; }
+.cm-s-mbo span.cm-atom { color: #00a8c6; }
+.cm-s-mbo span.cm-number { color: #00a8c6; }
+
+.cm-s-mbo span.cm-property, .cm-s-mbo span.cm-attribute { color: #9ddfe9; }
+.cm-s-mbo span.cm-keyword { color: #ffb928; }
+.cm-s-mbo span.cm-string { color: #ffcf6c; }
+.cm-s-mbo span.cm-string.cm-property { color: #ffffec; }
+
+.cm-s-mbo span.cm-variable { color: #ffffec; }
+.cm-s-mbo span.cm-variable-2 { color: #00a8c6; }
+.cm-s-mbo span.cm-def { color: #ffffec; }
+.cm-s-mbo span.cm-bracket { color: #fffffc; font-weight: bold; }
+.cm-s-mbo span.cm-tag { color: #9ddfe9; }
+.cm-s-mbo span.cm-link { color: #f54b07; }
+.cm-s-mbo span.cm-error { border-bottom: #636363; color: #ffffec; }
+.cm-s-mbo span.cm-qualifier { color: #ffffec; }
+
+.cm-s-mbo .CodeMirror-activeline-background { background: #494b41; }
+.cm-s-mbo .CodeMirror-matchingbracket { color: #ffb928 !important; }
+.cm-s-mbo .CodeMirror-matchingtag { background: rgba(255, 255, 255, .37); }
+</style>

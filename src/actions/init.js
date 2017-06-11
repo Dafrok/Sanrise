@@ -14,9 +14,12 @@ store.addAction('initFragment', payload => builder().set('pc.data.fragment', [])
 
 store.addAction('initVariable', payload => builder().set('pc.data.variable', {}))
 
+store.addAction('initEditorPanel', payload => builder().set('pc.panel', 'layout'))
+
 store.addAction('init', (payload, {dispatch}) => {
   dispatch('initInfo')
   dispatch('initFragment')
   dispatch('initVariable')
   dispatch('initLayout')
+  dispatch('initEditorPanel')
 })
