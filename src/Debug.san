@@ -1,6 +1,5 @@
 <template lang="pug">
-ul
-  li(s-if="0 === index", s-for="item, index in list")
+div.foo 233
 </template>
 
 <script>
@@ -13,3 +12,8 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus" scoped>
+.foo
+  background blue
+</style>
