@@ -1,8 +1,8 @@
 import '@/actions/index.js'
 import {store} from 'san-store'
 import {router} from 'san-router'
-// import App from '@/App.san'
-import App from '@/Debug.san'
+import App from '@/App.san'
+// import App from '@/debug/Debug.san'
 import '@/../node_modules/font-awesome/css/font-awesome.min.css'
 import '@/../node_modules/codemirror/lib/codemirror.css'
 import '@/../node_modules/codemirror/mode/javascript/javascript.js'
@@ -23,5 +23,6 @@ router.add({
   Component: App,
   target: 'body'
 })
+
 
 router.start()

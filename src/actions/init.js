@@ -6,6 +6,7 @@ import {Layout} from '@/base/factory.js'
 store.addAction('initLayout', payload => builder().set('pc.data.layout', new Layout({id: 'sr-root'})))
 
 store.addAction('initInfo', payload => builder().set('pc.data.info', {
+  id: 'sr_project',
   title: 'Sanrise Project',
   idOrder: 0
 }))

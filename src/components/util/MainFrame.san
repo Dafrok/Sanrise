@@ -47,6 +47,8 @@ $right-width=180px
     &>section
       flex 1
       overflow auto
+      position relative
+      background $main-color
     &>aside, &>nav
       color $text-color
       background $aside-color
