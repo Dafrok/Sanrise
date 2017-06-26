@@ -1,0 +1,111 @@
+<template lang="pug">
+div
+  .item(s-for="item in sub")
+    leaf-node(s-if="item.leaf" item="{{item}}", on-remove="remove($event)", on-update="update($event)")
+    branch-node(s-else path="{{path}}" item="{{item}}", on-remove="remove($event)")
+  //- button.add(on-click="append") 添加变量
+</template>
+
+<script>
+import {checkType} from '@/base/util.js'
+import {types} from '@/base/types.js'
+import Leaf from './Leaf.js'
+import Branch from './Branch.js'
+import JsonNode from './JsonNode.js'
+
+JsonNode.components = {
+  'leaf-node': Leaf,
+  'branch-node': Branch
+}
+
+Branch.components = {
+  'json-node': JsonNode
+}
+
+Branch.computed.typeName = Leaf.computed.typeName = function () {
+  return types[this.data.get('type')]
+}
+
+export default JsonNode
+</script>
+
+<style lang="stylus">
+@import "~@/config/variables.styl"
+.json-editor
+  .fa
+    width 20px
+    font-size 16px
+    text-align center
+    cursor pointer
+    &.fa-times
+      color #dd3333
+  button.add
+    border 0
+    background silver
+    outline 0
+    color white
+  .label, .edit
+    display inline-block
+  .item
+    color white
+    padding-left 20px
+    line-height 2
+    white-space nowrap
+    min-height 34px
+    a.value
+      max-width 500px
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
+    .key, a, span, input, select, button
+      vertical-align middle
+    .key
+      font-size 12px
+      color #333
+      display inline-block
+      padding 0 10px
+      background #ffcc00
+      border-radius 3px
+      line-height 1.5
+    .type
+      color #666
+    a
+      display inline-block
+      cursor pointer
+  .edit
+    font-size 0
+    vertical-align middle
+    border 1px solid black
+    border-radius 3px
+    overflow hidden
+    margin 5px 0
+    .last
+      border-right 0
+    select
+      width 70px
+      color #ffcc00
+    input
+      padding 0 10px
+      &.key
+        width 100px
+        background $panel-color
+        color #ffcc00
+        border-radius 0
+      &.value
+        width 300px
+    input, select, button
+      height 20px
+      line-height 20px
+    input, .select, button
+      width auto
+      background $panel-color
+      display inline-block
+      border-right 1px solid $primary-color
+    button
+      background lighten($primary-color, 20)
+      &:hover
+        background $primary-color
+    .branch
+      padding 0
+      margin 0
+</style>

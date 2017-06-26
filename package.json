@@ -48,6 +48,7 @@
     "webpack-dev-server": "^2.4.2"
   },
   "dependencies": {
+    "clip-it": "0.0.2",
     "codemirror": "^5.26.0",
     "font-awesome": "^4.7.0",
     "json-beautify": "^1.0.1",
