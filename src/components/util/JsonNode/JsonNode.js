@@ -1,11 +1,34 @@
 import {checkType} from '@/base/util.js'
 export default {
   append (opts) {
-    opts && opts.path.unshift(this.data.get('path'))
-    this.fire('append', opts || {
-      path: [`${this.data.get('path')}` ,'newData'],
-      value: ''
-    })
+    if (typeof opts === 'string') {
+      this.fire('append', [this.data.get('path'), opts])
+    } else if (typeof opts === 'undefined') {
+      this.fire('append', [this.data.get('path')])
+    } else {
+      opts.unshift(this.data.get('path'))
+      this.fire('append', opts)
+    }
+  },
+  push (opts) {
+    if (typeof opts === 'string') {
+      this.fire('push', [this.data.get('path'), opts])
+    } else if (typeof opts === 'undefined') {
+      this.fire('push', [this.data.get('path')])
+    } else {
+      opts.unshift(this.data.get('path'))
+      this.fire('push', opts)
+    }
+  },
+  unshift (opts) {
+    if (typeof opts === 'string') {
+      this.fire('unshift', [this.data.get('path'), opts])
+    } else if (typeof opts === 'undefined') {
+      this.fire('unshift', [this.data.get('path')])
+    } else {
+      opts.unshift(this.data.get('path'))
+      this.fire('unshift', opts)
+    }
   },
   remove (opts) {
     if (typeof opts === 'string') {
@@ -28,7 +51,8 @@ export default {
         case 'Object':
           const result = []
           for (const key in data) {
-            result.push({key, value: data[key], leaf: typeof data[key] !== 'object', type: checkType(data[key])})
+            console.log(typeof data[key])
+            result.push({key, value: data[key], leaf: checkType(data[key]) !== 'Object' && checkType(data[key]) !== 'Array', type: checkType(data[key])})
           }
           return result
         default:
