@@ -27,7 +27,7 @@ export const toArray = (key, value) => {
       ret.children = []
       for (const key in value) {
         if (Number(key) === (key | 0)) {
-          ret.children.push(toArray(key, value[key]))
+          ret.children.push(toArray(null, value[key]))
         } else {
           ret[key] = value[key]
         }

@@ -11,6 +11,8 @@ div
       on-push="push($event)"
       on-unshift="unshift($event)"
       on-changetype="changeType($event)"
+      on-changekey="changeKey($event)"
+      on-update="update($event)"
       on-expand="expand($event)")
     leaf-node(s-else
       item="{{data}}"
@@ -18,6 +20,7 @@ div
       isListItem="{{isListItem}}"
       on-remove="remove($event)"
       on-changetype="changeType($event)"
+      on-changekey="changeKey($event)"
       on-update="update($event)")
 </template>
 
@@ -129,7 +132,9 @@ $key-null-color = #f66
         border-radius 0
         border-top-right-radius 3px
         border-bottom-right-radius 3px
-        border 1px solid $key-input-color 
+        border 1px solid $key-input-color
+        &:focus
+          background-color darken($panel-color, 10)
         &.readonly
           color white
           background lighten($panel-color, 20)

@@ -4,10 +4,11 @@ div.json-editor
     root="{{true}}"
     path="json"
     on-add="add($event)"
-    on-append="append($event)"
     on-remove="remove($event)"
     on-push="push($event)"
     on-changetype="changeType($event)"
+    on-changekey="changeKey($event)"
+    on-update="update($event)"
     on-unshift="unshift($event)"
     on-expand="expand($event)")
 </template>
@@ -34,26 +35,50 @@ export default {
   components: {
     'json-node': JsonNode
   },
+  update (e) {
+    console.log(e)
+    const value = e[e.length - 1]
+    const path = e[0] + e.slice(1, -1).map(item => `['${item}']`).join('') + '.value'
+    this.data.set(path, value)
+  },
   expand (e) {
     const value = e[e.length - 1]
     const path = e[0] + e.slice(1, -1).map(item => `['${item}']`).join('') + '.isExpand'
     this.data.set(path, value)
   },
+  changeKey (e) {
+    const value = e[e.length - 1]
+    const path = e[0] + e.slice(1, -1).map(item => `['${item}']`).join('') + '.key'
+    this.data.set(path, value)
+  },
   push (e) {
     const root = e[0]
     const path = e.slice(1).map(item => `['${item}']`).join('')
+    const parentPath = root + e.slice(1, -1).map(item => `['${item}']`).join('')
+
     const children = this.data.get(root + path)
-    this.data.set(root, push(this.data.get(root), path, {
-      // key: children.length,
+    const firstData = children[0]
+
+    this.data.set(parentPath + '.isExpand', true)
+    this.data.set(root, push(this.data.get(root), path, firstData || {
       value: null,
       type: 'Null'
     }))
   },
-  // unshift (e) {
-  //   const root = e[0]
-  //   const path = e.slice(1).map(item => `['${item}']`).join('')
-  //   this.data.set(root, unshift(this.data.get(root), path, null))
-  // },
+  unshift (e) {
+    const root = e[0]
+    const path = e.slice(1).map(item => `['${item}']`).join('')
+    const parentPath = root + e.slice(1, -1).map(item => `['${item}']`).join('')
+
+    const children = this.data.get(root + path)
+    const lastData = children[children.length - 1]
+
+    this.data.set(parentPath + '.isExpand', true)
+    this.data.set(root, unshift(this.data.get(root), path, lastData || {
+      value: null,
+      type: 'Null'
+    }))
+  },
   changeType (e) {
     const value = e[e.length - 1]
     const path = e[0] + e.slice(1, -1).map(item => `['${item}']`).join('')

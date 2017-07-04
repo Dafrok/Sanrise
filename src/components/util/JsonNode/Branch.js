@@ -13,7 +13,7 @@ export default {
           <option s-for="type in types" value="{{type.value}}">{{type.name}}</option>
         </select>
       </span>
-      <input readonly="{{isListItem}}" class="key {{isListItem ? 'readonly' : ''}}" value="{{item.key}}">
+      <input readonly="{{isListItem}}" class="key {{isListItem ? 'readonly' : ''}}" value="{{isListItem ? index : item.key}}" on-blur="setKey($event)" on-focus="selectAll($event)">
       <button on-click="add" s-if="item.type === 'Object'">添加属性</button>
       <button on-click="unshift" s-if="item.type === 'Array'">首行添加</button>
       <button on-click="push" s-if="item.type === 'Array'">末行添加</button>
@@ -30,10 +30,12 @@ export default {
       data="{{children}}"
       index="{{index}}"
       isListItem="{{item.type === 'Array'}}"
+      on-update="update($event, index)"
       on-add="add($event, index)"
       on-push="push($event, index)"
-      on-unshift="unshift($event)"
+      on-unshift="unshift($event, index)"
       on-changetype="changeType($event, index)"
+      on-changekey="changeKey($event, index)"
       on-remove="remove($event, index)"
       on-expand="expand($event, index)">
     </json-node>
@@ -44,8 +46,14 @@ export default {
     }
   },
   computed: {},
+  selectAll (e) {
+    e.target.select()
+  },
   setType (e) {
     this.fire('changetype', [e.target.value])
+  },
+  setKey (e) {
+    this.fire('changekey', [e.target.value])
   },
   toggle () {
     const state = !this.data.get('item.isExpand')
@@ -56,9 +64,17 @@ export default {
     e.unshift('children')
     this.fire('expand', e)
   },
+  update (e = [], i) {
+    !isEmpty(i) && e.unshift(i) && e.unshift('children')
+    this.fire('update', e)
+  },
   changeType (e = [], i) {
     !isEmpty(i) && e.unshift(i) && e.unshift('children')
     this.fire('changetype', e)
+  },
+  changeKey (e = [], i) {
+    !isEmpty(i) && e.unshift(i) && e.unshift('children')
+    this.fire('changekey', e)
   },
   remove (e = [], i) {
     !isEmpty(i) && e.unshift(i) && e.unshift('children')
@@ -73,14 +89,10 @@ export default {
     !isEmpty(i) && e.unshift(i)
     e.unshift('children')
     this.fire('push', e)
+  },
+  unshift (e = [], i) {
+    !isEmpty(i) && e.unshift(i)
+    e.unshift('children')
+    this.fire('unshift', e)
   }
-  // push (e) {
-  //   this.fire('push', e || String(this.data.get('item.key')))
-  // },
-  // unshift (e) {
-  //   this.fire('unshift', e || String(this.data.get('item.key')))
-  // },
-  // append (e) {
-  //   this.fire('append', e || String(this.data.get('item.key')))
-  // }
 }
