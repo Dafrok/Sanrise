@@ -1,4 +1,4 @@
-export default {
+export const types = {
   Object: '无序列表',
   Array: '有序列表',
   Number: '数字',
@@ -6,3 +6,4 @@ export default {
   Boolean: '布尔值',
   Null: '空'
 }
+export const typesList = Object.keys(types).map(key => ({name: types[key], value: key}))
