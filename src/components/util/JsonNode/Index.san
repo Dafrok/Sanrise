@@ -1,11 +1,24 @@
 <template lang="pug">
 div
-  .root(s-if="root")
-    button(on-click="append") 添加数据
-  .item(s-for="item in sub")
-    leaf-node(s-if="item.leaf" item="{{item}}", isListItem="{{isListItem}}", on-remove="remove($event)", on-update="update($event)")
-    branch-node(s-else path="{{path}}" item="{{item}}", isListItem="{{isListItem}}", on-remove="remove($event)", on-append="append($event)", on-push="push($event)", on-unshift="unshift($event)")
-  //- button.add(on-click="append") 添加变量
+  .item(class="{{root ? 'is-root' : ''}}")
+    branch-node(s-if="data.children"
+      root="{{root}}"
+      item="{{data}}"
+      index="{{index}}"
+      isListItem="{{isListItem}}"
+      on-remove="remove($event)"
+      on-add="add($event)"
+      on-push="push($event)"
+      on-unshift="unshift($event)"
+      on-changetype="changeType($event)"
+      on-expand="expand($event)")
+    leaf-node(s-else
+      item="{{data}}"
+      index="{{index}}"
+      isListItem="{{isListItem}}"
+      on-remove="remove($event)"
+      on-changetype="changeType($event)"
+      on-update="update($event)")
 </template>
 
 <script>
@@ -75,6 +88,19 @@ $key-null-color = #f66
     a
       display inline-block
       cursor pointer
+  .root.toolbar
+    a
+      width 24px
+      height 24px
+      background $active-color
+      border-radius 100%
+      line-height 24px
+      font-size 14px
+      text-align center
+      box-shadow 0 0 3px lighten($active-color, 10)
+      &:hover
+        background $active-color-hl
+        color white
   .edit
     font-size 0
     vertical-align middle

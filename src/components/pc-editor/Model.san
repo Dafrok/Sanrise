@@ -1,0 +1,123 @@
+<template lang="pug">
+div.json-editor
+  json-node(data="{{data}}"
+    root="{{true}}"
+    path="json"
+    on-add="add($event)"
+    on-append="append($event)"
+    on-remove="remove($event)"
+    on-push="push($event)"
+    on-changetype="changeType($event)"
+    on-unshift="unshift($event)"
+    on-expand="expand($event)")
+</template>
+
+<script>
+import JsonNode from '@/components/util/JsonNode/Index.san'
+import {splice, push, unshift} from 'san-update'
+import {checkType, toArray} from '@/base/util.js'
+
+const mockJson = {
+  foo: 233,
+  bar: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`,
+  baz: [123, 456, [[1, [2, [3]]]]],
+  qux: {
+    foo: 1,
+    bar: [
+      {name: 'foo', value: 1},
+      {name: 'bar', value: 2},
+    ]
+  }
+}
+
+export default {
+  components: {
+    'json-node': JsonNode
+  },
+  expand (e) {
+    const value = e[e.length - 1]
+    const path = e[0] + e.slice(1, -1).map(item => `['${item}']`).join('') + '.isExpand'
+    this.data.set(path, value)
+  },
+  push (e) {
+    const root = e[0]
+    const path = e.slice(1).map(item => `['${item}']`).join('')
+    const children = this.data.get(root + path)
+    this.data.set(root, push(this.data.get(root), path, {
+      // key: children.length,
+      value: null,
+      type: 'Null'
+    }))
+  },
+  // unshift (e) {
+  //   const root = e[0]
+  //   const path = e.slice(1).map(item => `['${item}']`).join('')
+  //   this.data.set(root, unshift(this.data.get(root), path, null))
+  // },
+  changeType (e) {
+    const value = e[e.length - 1]
+    const path = e[0] + e.slice(1, -1).map(item => `['${item}']`).join('')
+    const setDefaultValue = val => {
+      this.data.set(`${path}.value`, val)
+      this.data.set(`${path}.children`, typeof val === 'undefined' ? [] : null)
+    }
+    switch (value) {
+      case 'String':
+        setDefaultValue('')
+        break
+      case 'Number':
+        setDefaultValue(0)
+        break
+      case 'Null':
+        setDefaultValue(null)
+        break
+      case 'Boolean':
+        setDefaultValue(false)
+        break
+      default:
+        setDefaultValue()
+    }
+    this.data.set(`${path}.type`, value)
+  },
+  remove (e) {
+    const root = e[0]
+    const index = e[e.length - 1]
+    const path = e[1] + e.slice(2, -1).map(item => `['${item}']`).join('')
+    this.data.set(root, splice(this.data.get(root), path, index, 1))
+    // const path = e.slice(1).map((item, index) => index ? `['${item}']` : item).join('')
+    // this.data.set('data', omit(this.data.get('data'), path, true))
+  },
+  add (e) {
+    const root = e[0]
+    const pushPath = e.slice(1).map(item => `['${item}']`).join('')
+    const parentPath = root + e.slice(1, -1).map(item => `['${item}']`).join('')
+    const path = root + pushPath
+    const children =  this.data.get(path)
+    const maxIndex = children.reduce((i, item) => {
+      if (item.key.slice(0, 7) === 'newData') {
+        return Math.max(++i, item.key.slice(7) | 0)
+      } else {
+        return i
+      }
+    }, 0)
+
+    this.data.set(parentPath + '.isExpand', true)
+    this.data.set(root, push(this.data.get(root), pushPath, {
+      key: `newData${maxIndex}`,
+      value: null,
+      type: 'Null'
+    }))
+  },
+  initData () {
+    return {
+      data: toArray('data', mockJson)
+    }
+  }
+}
+</script>
+
+<style scoped lang="stylus">
+.json-editor
+  overflow auto
+  white-space nowrap
+</style>

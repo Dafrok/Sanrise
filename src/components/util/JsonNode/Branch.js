@@ -1,45 +1,86 @@
-import {checkType} from '@/base/util.js'
+import {checkType, isEmpty} from '@/base/util.js'
 import {typesList} from '@/base/types.js'
 
 export default {
   template: `<div class="branch">
-    <a s-if="expand" on-click="toggle" class="fa fa-caret-down"></a>
-    <a s-else on-click="toggle" class="fa fa-caret-right"></a>
-    <div class="edit">
+    <a on-click="toggle" s-if="!root">
+      <span s-if="item.isExpand" class="fa fa-caret-down"></span>
+      <span s-else class="fa fa-caret-right"></span>
+    </a>
+    <div class="edit" s-if="!root">
       <span class="select">
-        <select value="{{item.type}}">
-          <option s-for="type in types" value="{{type.value}}" on-change="setType($event)">{{type.name}}</option>
+        <select value="{{item.type}}" on-change="setType($event)">
+          <option s-for="type in types" value="{{type.value}}">{{type.name}}</option>
         </select>
       </span>
       <input readonly="{{isListItem}}" class="key {{isListItem ? 'readonly' : ''}}" value="{{item.key}}">
-      <button on-click="append" s-if="item.type === 'Object'">添加属性</button>
+      <button on-click="add" s-if="item.type === 'Object'">添加属性</button>
       <button on-click="unshift" s-if="item.type === 'Array'">首行添加</button>
       <button on-click="push" s-if="item.type === 'Array'">末行添加</button>
-      <button class="last" on-click="fire('remove', item.key)">删除</button>
+      <button class="last" on-click="remove">删除</button>
     </div>
-    <json-node class="value" s-if="expand" data="{{item.value}}" isListItem="{{isList}}" path="{{item.key}}" on-append="append($event)" on-push="push($event)" on-unshift="unshift($event)" on-remove="fire('remove', $event)"></json-node>
+    <div s-else class="root toolbar">
+      <span class="fa fa-database"></span><span>数据源</span>
+      <a on-click="add(null, index)" class="fa fa-plus"></a>
+    </div>
+    <json-node
+      s-if="item.isExpand || root"
+      s-for="children, index in item.children"
+      class="value"
+      data="{{children}}"
+      index="{{index}}"
+      isListItem="{{item.type === 'Array'}}"
+      on-add="add($event, index)"
+      on-push="push($event, index)"
+      on-unshift="unshift($event)"
+      on-changetype="changeType($event, index)"
+      on-remove="remove($event, index)"
+      on-expand="expand($event, index)">
+    </json-node>
   </div>`,
   initData () {
     return {
-      types: typesList,
-      expand: true
+      types: typesList
     }
   },
-  computed: {
-    isList () {
-      return this.data.get('item.type') === 'Array'
-    }
+  computed: {},
+  setType (e) {
+    this.fire('changetype', [e.target.value])
   },
-  toggle (bool) {
-    this.data.set('expand', typeof bool === 'boolean' ? bool : !this.data.get('expand'))
+  toggle () {
+    const state = !this.data.get('item.isExpand')
+    this.fire('expand', [state])
   },
-  push (e) {
-    this.fire('push', e || String(this.data.get('item.key')))
+  expand (e, i) {
+    e.unshift(i)
+    e.unshift('children')
+    this.fire('expand', e)
   },
-  unshift (e) {
-    this.fire('unshift', e || String(this.data.get('item.key')))
+  changeType (e = [], i) {
+    !isEmpty(i) && e.unshift(i) && e.unshift('children')
+    this.fire('changetype', e)
   },
-  append (e) {
-    this.fire('append', e || String(this.data.get('item.key')))
+  remove (e = [], i) {
+    !isEmpty(i) && e.unshift(i) && e.unshift('children')
+    this.fire('remove', e)
+  },
+  add (e = [], i) {
+    !isEmpty(i) && e.unshift(i)
+    e.unshift('children')
+    this.fire('add', e)
+  },
+  push (e = [], i) {
+    !isEmpty(i) && e.unshift(i)
+    e.unshift('children')
+    this.fire('push', e)
   }
+  // push (e) {
+  //   this.fire('push', e || String(this.data.get('item.key')))
+  // },
+  // unshift (e) {
+  //   this.fire('unshift', e || String(this.data.get('item.key')))
+  // },
+  // append (e) {
+  //   this.fire('append', e || String(this.data.get('item.key')))
+  // }
 }
