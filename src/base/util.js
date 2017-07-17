@@ -15,7 +15,9 @@ export const getCurrentLayout = (layout, activeLayoutPath) => {
 
 export const checkType = str => Object.prototype.toString.call(str).slice(8, -1)
 
-export const isEmpty = val => !(val === 0 || !!val)
+export const isEmpty = val => !(val === 0 || !!val) && val !== true
+
+export const toText = val => typeof val === 'string' || typeof val === 'number' ? String(val) : ''
 
 export const toArray = (key, value) => {
   const ret = {
@@ -44,4 +46,31 @@ export const toArray = (key, value) => {
       break
   }
   return ret
+}
+
+export const toObject = node => {
+  switch (node.type) {
+    case 'Object':
+      const obj = {}
+      for (const item of node.children) {
+        obj[item.key] = toObject(item)
+      }
+      return obj
+    case 'Array':
+      const ary = []
+      for (const item of node.children) {
+        ary.push(toObject(item))
+      }
+      return ary
+    case 'Null':
+      return null
+    // case 'Number':
+    //   return Number(node.value)
+    // case 'String':
+    //   return String(node.value)
+    // case 'Boolean':
+    //   return Boolean(node.value)
+    default:
+      return global[node.type](node.value)
+  }
 }

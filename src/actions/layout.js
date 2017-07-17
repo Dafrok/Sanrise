@@ -92,3 +92,6 @@ store.addAction('setLayoutLink', (payload = {}, {getState}) => {
     target: target ? target : '_blank'
   })
 })
+
+store.addAction('setLayoutText', (payload = {}, {getState}) => builder().set(`pc.data.${getState('pc.activeLayout')}.text`, payload))
+store.addAction('setLayoutLive', (payload = {}, {getState}) => builder().set(`pc.data.${getState('pc.activeLayout')}.isLive`, payload))
