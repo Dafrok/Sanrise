@@ -3,6 +3,7 @@ div.json-editor
   json-node(data="{{data}}"
     root="{{true}}"
     path="json"
+    on-save="save"
     on-add="add($event)"
     on-remove="remove($event)"
     on-push="push($event)"
@@ -15,31 +16,29 @@ div.json-editor
 
 <script>
 import JsonNode from '@/components/util/JsonNode/Index.san'
+import {store, connect} from 'san-store'
 import {splice, push, unshift} from 'san-update'
-import {checkType, toArray} from '@/base/util.js'
+import {checkType, toArray, toObject} from '@/base/util.js'
 
-const mockJson = {
-  foo: 233,
-  bar: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`,
-  baz: [123, 456, [[1, [2, [3]]]]],
-  qux: {
-    foo: 1,
-    bar: [
-      {name: 'foo', value: 1},
-      {name: 'bar', value: 2},
-    ]
-  }
-}
-
-export default {
+export default connect.san({
+  source: 'pc.data.variable'
+})({
   components: {
     'json-node': JsonNode
   },
+  computed: {
+    data () {
+      return toArray('data', this.data.get('source'))
+    }
+  },
+  save (val) {
+    store.dispatch('updateVariable', toObject(this.data.get('data')))
+  },
   update (e) {
-    console.log(e)
     const value = e[e.length - 1]
-    const path = e[0] + e.slice(1, -1).map(item => `['${item}']`).join('') + '.value'
-    this.data.set(path, value)
+    const valuePath = e[0] + e.slice(1, -1).map(item => `['${item}']`).join('') + '.value'
+    const typePath = e[0] + e.slice(1, -1).map(item => `['${item}']`).join('') + '.type'
+    this.data.set(valuePath, this.data.get(typePath) === 'Number' ? Number(value) || 0 : value)
   },
   expand (e) {
     const value = e[e.length - 1]
@@ -132,13 +131,8 @@ export default {
       value: null,
       type: 'Null'
     }))
-  },
-  initData () {
-    return {
-      data: toArray('data', mockJson)
-    }
   }
-}
+})
 </script>
 
 <style scoped lang="stylus">

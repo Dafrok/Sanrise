@@ -123,7 +123,7 @@ export default connect.san({
       line-height 30px
       cursor pointer
       &.active
-        background $aside-color
+        background $primary-color
   .tabs-container
     flex 1
     position relative

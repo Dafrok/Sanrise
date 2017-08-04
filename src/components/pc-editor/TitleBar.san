@@ -2,18 +2,30 @@
 section.pc-title-bar
   .title {{title}}
   .toolbar
-    a
-      span 发布
-      span.fa.fa-share-square-o
-    a
+    a(on-click="newProject")
+      span 新建
+      span.fa.fa-file-o
+    a(on-click="save")
       span 保存
       span.fa.fa-floppy-o
+    a(on-click="load")
+      span 发布
+      span.fa.fa-share-square-o
 </template>
 
 <script>
 import {store, connect} from 'san-store'
 
 export default connect.san({title: 'pc.data.info.title'})({
+  save () {
+    store.dispatch('saveProject')
+  },
+  load () {
+    store.dispatch('loadProject')
+  },
+  newProject () {
+    store.dispatch('init')
+  }
 })
 </script>
 

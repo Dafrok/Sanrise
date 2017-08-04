@@ -1,13 +1,19 @@
 <template lang="pug">
 section.editor
-  sr-layout(s-if="panel === 'layout'", layout="{{layout}}", isRoot="{{true}}", path="layout")
+  sr-editor(s-if="panel === 'layout'", layout="{{layout}}")
   source-code(s-if="panel === 'code'")
+  project-list(s-if="panel === 'open'")
+  sr-preview(s-if="panel === 'preview'")
+  sr-model(s-if="panel === 'model'")
 </template>
 
 <script>
 import {connect} from 'san-store'
-import Layout from './Layout.san'
+import Editor from './Editor.san'
+import Model from './Model.san'
+import ProjectList from './ProjectList.san'
 import SourceCode from './SourceCode.san'
+import Preview from './Preview.san'
 
 const mapStates = {
   info: 'pc.data.info',
@@ -17,8 +23,11 @@ const mapStates = {
 const mapActions = {}
 export default connect.san(mapStates, mapActions)({
   components: {
-    'sr-layout': Layout,
-    'source-code': SourceCode
+    'sr-editor': Editor,
+    'sr-model': Model,
+    'sr-preview': Preview,
+    'source-code': SourceCode,
+    'project-list': ProjectList
   }
 })
 </script>
@@ -26,8 +35,6 @@ export default connect.san(mapStates, mapActions)({
 <style lang="stylus">
 @import "~@/config/variables.styl"
 .editor
-  transform translate(0, 0)
-  min-height 100%
   .layout
     pointer-events auto
     &>.helper
