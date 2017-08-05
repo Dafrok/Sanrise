@@ -6,6 +6,7 @@ div
       item="{{data}}"
       index="{{index}}"
       isListItem="{{isListItem}}"
+      on-save="fire('save')"
       on-remove="remove($event)"
       on-add="add($event)"
       on-push="push($event)"
@@ -52,6 +53,7 @@ export default JsonNode
 $key-input-color = #fc0
 $key-leaf-color = #099
 $key-null-color = #f66
+$operator-border-color = #888
 .json-editor
   .fa
     width 20px
@@ -60,12 +62,8 @@ $key-null-color = #f66
     cursor pointer
     &.fa-times
       color #dd3333
-  button.add
-    border 0
-    background silver
-    outline 0
-    color white
-  .label, .edit
+  .label, .edit, .operator, .root
+    vertical-align middle
     display inline-block
   .item
     color white
@@ -91,22 +89,33 @@ $key-null-color = #f66
     a
       display inline-block
       cursor pointer
-  .root.toolbar
-    a
-      width 24px
+  .root
+    margin-top 10px
+    &>.operator, &>.label
+      vertical-align middle
+      font-size 0
+      span
+        vertical-align middle
+        font-size 16px
+  .operator
+    overflow hidden
+    font-size 0
+    border-radius 5px
+    margin-left 5px
+    border 1px solid $operator-border-color
+    button
+      width auto
       height 24px
-      background $active-color
-      border-radius 100%
       line-height 24px
-      font-size 14px
-      text-align center
-      box-shadow 0 0 3px lighten($active-color, 10)
+      display inline-block
+      background lighten($primary-color, 20)
+      border-right 1px solid $operator-border-color
+      &:last-child
+        border 0
       &:hover
-        background $active-color-hl
-        color white
+        background $primary-color
   .edit
     font-size 0
-    vertical-align middle
     margin 5px 0
     .last
       border-right 0
@@ -123,6 +132,21 @@ $key-null-color = #f66
         -webkit-appearance none
         &:hover
           background-color lighten(#ffcc00, 20)
+    textarea
+      &.value
+        width 300px
+        margin-left 10px
+        border-radius 3px
+        background darken($panel-color, 10)
+        vertical-align top
+        height 24px
+        transition all .3s
+        resize none
+        line-height 24px
+        padding 0 10px
+        &:focus
+          height 100px
+          box-shadow 0 0 3px white inset
     input
       padding 0 10px
       &.key
@@ -144,6 +168,8 @@ $key-null-color = #f66
         width 300px
         margin-left 10px
         border-radius 3px
+        &:focus
+          box-shadow 0 0 3px white inset          
     input, select, button
       height 24px
       line-height 24px
@@ -152,19 +178,22 @@ $key-null-color = #f66
       background darken($panel-color, 10)
       display inline-block
     button
-      background lighten($primary-color, 20)
-      margin-left 10px
-      &:hover
-        background $primary-color
+      &.boolean
+        margin-left 10px
+        border-radius 3px
+        background darken($panel-color, 10)
+        &:hover
+          box-shadow 0 0 3px white inset
     .branch
       padding 0
       margin 0
-  .edit
     .is-leaf
       &.select
         select
           color white
           background-color $key-leaf-color
+          &:hover
+            background-color lighten($key-leaf-color, 10)
       &.key
         color lighten($key-leaf-color, 10)
         border-color $key-leaf-color
@@ -173,6 +202,8 @@ $key-null-color = #f66
         select
           color white
           background-color $key-null-color 
+          &:hover
+            background-color lighten($key-null-color, 10)
       &.key
         color lighten($key-null-color, 10)
         border-color $key-null-color 

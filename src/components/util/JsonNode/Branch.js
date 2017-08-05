@@ -2,7 +2,7 @@ import {checkType, isEmpty} from '@/base/util.js'
 import {typesList} from '@/base/types.js'
 
 export default {
-  template: `<div class="branch">
+  template: `<div class="branch {{root ? 'root' : ''}}">
     <a on-click="toggle" s-if="!root">
       <span s-if="item.isExpand" class="fa fa-caret-down"></span>
       <span s-else class="fa fa-caret-right"></span>
@@ -14,14 +14,20 @@ export default {
         </select>
       </span>
       <input readonly="{{isListItem}}" class="key {{isListItem ? 'readonly' : ''}}" value="{{isListItem ? index : item.key}}" on-blur="setKey($event)" on-focus="selectAll($event)">
+    </div>
+    <div s-else class="label">
+      <span class="fa fa-database"></span>
+      <span>数据源</span>
+    </div>
+    <div s-if="!root" class="operator">
       <button on-click="add" s-if="item.type === 'Object'">添加属性</button>
       <button on-click="unshift" s-if="item.type === 'Array'">首行添加</button>
       <button on-click="push" s-if="item.type === 'Array'">末行添加</button>
       <button class="last" on-click="remove">删除</button>
     </div>
-    <div s-else class="root toolbar">
-      <span class="fa fa-database"></span><span>数据源</span>
-      <a on-click="add(null, index)" class="fa fa-plus"></a>
+    <div s-else class="operator">
+      <button on-click="add">添加数据</button>
+      <button on-click="fire('save')">保存</button>
     </div>
     <json-node
       s-if="item.isExpand || root"
