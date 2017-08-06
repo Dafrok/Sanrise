@@ -6,6 +6,14 @@ section.quick-set-panel
       div.input
         input(value="{{currentLayout.id}}", on-blur="changeId($event)")
     li.form-control
+      div.label 文本
+      div.input
+        input(value="{{currentLayout.text}}", on-blur="changeText($event)")
+    li.form-control
+      div.label 是否显示
+      div.input
+        input(value="{{currentLayout.isLive}}", on-blur="changeLive($event)")
+    li.form-control
       div.label 链接地址
       div.input
         input(value="{{currentLayout.link.href}}", on-blur="changeLinkHref($event)")
@@ -52,6 +60,14 @@ export default connect.san({
       path: this.data.get('activeLayout'),
       value: e.target.value
     })
+  },
+  changeText (e) {
+    e.stopPropagation()
+    store.dispatch('setLayoutText', e.target.value)
+  },
+  changeLive (e) {
+    e.stopPropagation()
+    store.dispatch('setLayoutLive', e.target.value)
   },
   changeAxis (e) {
     e.stopPropagation()

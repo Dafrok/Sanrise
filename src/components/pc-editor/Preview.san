@@ -1,0 +1,37 @@
+<template lang="pug">
+.preview
+  iframe(border="0")
+</template>
+
+<script>
+import {store, connect} from 'san-store'
+export default connect.san({
+  data: 'pc.data'
+})({
+  reset () {
+    const iframe = this.el.querySelector('iframe').contentWindow
+    iframe.location.reload()
+    const doc = iframe.document
+    const script = doc.createElement('script')
+    script.innerText = `console.log('${JSON.stringify(this.data.get('data'))}')`
+    doc.body.appendChild(script)
+  },
+  attached () {
+    this.reset()
+    this.watch('data', this.reset)
+  }
+})
+</script>
+
+<style lang="stylus">
+.preview
+  position absolute
+  top 0
+  bottom 0
+  left 0
+  right 0
+  iframe
+    border 0
+    width 100%
+    height 100%
+</style>

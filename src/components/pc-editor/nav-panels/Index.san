@@ -12,6 +12,7 @@ export default {
         {name: '视图', icon: "list-alt", panel: 'layout'},
         {name: '源码', icon: "code",  panel: 'code'},
         {name: '设置', icon: "cog",  panel: 'settings'},
+        {name: '数据', icon: "database",  panel: 'model'},
         {name: '打开', icon: "folder-open",  panel: 'open'},
         {name: '预览', icon: "internet-explorer",  panel: 'preview'}
       ]
@@ -36,5 +37,5 @@ export default {
       line-height 30px
       cursor pointer
       &.active
-        background $active-color
+        background $primary-color
 </style>

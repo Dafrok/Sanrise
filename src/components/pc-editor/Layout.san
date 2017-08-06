@@ -5,14 +5,17 @@ div.layout(draggable="{{isActive}}", data-id="{{layout.id}}", class="{{component
     .resizer
       div(s-for="resizer in settings.resizers", draggable="{{isActive}}", class="rs-{{resizer}}", on-dragstart="getSize($event, axis, resizer)", on-drag="previewSize($event, axis, resizer)", on-dragend="setSize($event, axis, resizer)")
     a.wrapper(s-if="layout.link.href")
-      sr-layout(s-if="layout.type === 0", s-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
+      .text {{text}}
+      sr-layout(s-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
     .wrapper(s-else)
-      sr-layout(s-if="layout.type === 0", s-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
+      .text {{text}}
+      sr-layout(s-for="item, index in layout.children", layout="{{item}}", path="{{path}}.children[{{index}}]")
 </template>
 
 <script>
 import san from 'san'
 import {store, connect} from 'san-store'
+import {toText} from '@/base/util.js'
 import kebab from 'kebab-case'
 import Layout from '@/components/pc-editor/Layout.san'
 import settings from '@/config/quick-set.js'
@@ -28,7 +31,8 @@ const axisInfo = movingAttrs.reduce((obj, key) => {
 }, {})
 
 const mapStates = {
-  activeLayout: 'pc.activeLayout'
+  activeLayout: 'pc.activeLayout',
+  variable: 'pc.data.variable'
 }
 
 export default connect.san(mapStates)({
@@ -164,8 +168,26 @@ export default connect.san(mapStates)({
     })
   },
   computed: {
+    isLive () {
+      const path = this.data.get('layout.isLive')
+      const ret = store.getState(`pc.data.variable.${path}`)
+      console.log(ret)
+      return typeof ret === 'undefined' ? true : ret
+    },
     isActive () {
       return this.data.get('activeLayout') === this.data.get('path')
+    },
+    text () {
+      const str = this.data.get('layout.text')
+      if (!str) {
+        return
+      } else {
+        const regExpr = /\{\{[^\}\}]+\}\}/g
+        return str.replace(regExpr, match => {
+          const path = match.slice(2, -2)
+          return toText(store.getState(`pc.data.variable.${path}`))
+        })
+      }
     },
     componentClass () {
       return this.data.get('isActive') ? 'active' : ''

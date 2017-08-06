@@ -27,14 +27,13 @@ export default connect.san(mapStates, mapActions)({
     }
   },
   save () {
-    console.log(JSON.parse(this.codeMirror.getValue()))
     store.dispatch('updateLayout', {value: JSON.parse(this.codeMirror.getValue())})
   },
   close () {
     store.dispatch('switchEditorPanel', 'layout')
   },
   attached () {
-    global.mi = this.codeMirror = CodeMirror.fromTextArea(this.el.querySelector('textarea'), {
+    this.codeMirror = CodeMirror.fromTextArea(this.el.querySelector('textarea'), {
       lineNumbers: true
     })
     this.watch('currentLayout', val => this.codeMirror.setValue(this.data.get('sourceCode')))

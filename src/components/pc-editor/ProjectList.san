@@ -1,0 +1,75 @@
+<template lang="pug">
+section.project-list
+  .list
+    .search
+      input(placeholder="搜索")
+    ul.projects
+      li(s-for="project in projects", class="{{project === currentProject ? 'active' : ''}}", on-click="preview($event, project)") {{project.name}}
+  .preview
+    iframe
+</template>
+
+<script>
+import {connect, store} from 'san-store'
+
+export default connect.san({projects: 'pc.projectList'})({
+  preview (e, project) {
+    this.data.set('currentProject', project)
+  },
+  attached () {
+    store.dispatch('loadProjectList')
+  }
+})
+</script>
+
+<style lang="stylus">
+@import '~@/config/variables.styl'
+$list-width=150px
+$search-height=30px
+.project-list
+  font-size 0
+  .list
+    font-size 12px
+    position absolute
+    left 0
+    top 0
+    bottom 0
+    width $list-width
+    .projects
+      overflow auto
+      position absolute
+      top $search-height
+      bottom 0
+      left 0
+      right 0
+      li
+        display block
+        padding 5px
+        color $text-color
+        cursor pointer
+        &:hover
+          border-left 3px solid $highlight-color
+        &.active
+          cursor auto
+          background $active-color
+          &:hover
+            border-left 0
+    .search
+      width 100%
+      height $search-height
+      background-color lighten($main-color, 10)
+      input
+        height $search-height
+        color black
+        line-height $search-height
+        color white
+        &::placeholder
+          color white
+  .preview
+    background white
+    position absolute
+    top 0
+    left $list-width
+    right 0
+    bottom 0
+</style>
