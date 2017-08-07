@@ -13,7 +13,16 @@ store.addAction('initInfo', payload => builder().set('pc.data.info', {
 
 store.addAction('initFragment', payload => builder().set('pc.data.fragment', []))
 
-store.addAction('initVariable', payload => builder().set('pc.data.variable', {}))
+store.addAction('initVariable', payload => builder().set('pc.data.variable', {
+  foo: 'This is a test message',
+  bar: 233,
+  baz: true,
+  qux: true,
+  ary: [1, 2, 3],
+  obj: {
+    a: 1
+  }
+}))
 
 store.addAction('initEditorPanel', payload => builder().set('pc.panel', 'layout'))
 

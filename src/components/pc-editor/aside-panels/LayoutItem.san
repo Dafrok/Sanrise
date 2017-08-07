@@ -40,3 +40,33 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus">
+@import '~@/config/variables.styl'
+$list-height=24px
+.layout-list
+  li
+    cursor pointer
+    border-bottom 1px solid #666
+    line-height $list-height
+    position relative
+    transition all .3s
+    &:hover
+      background $active-color
+    .right
+      position absolute
+      right 0
+      top 0
+      bottom 0
+    .fa
+      margin-right 10px
+      cursor pointer
+    .tools
+      background #666
+    .id, .tools
+      padding 0 30px 0 10px
+      overflow hidden
+      white-space nowrap
+      word-wrap break-word 
+      text-overflow ellipsis
+</style>
