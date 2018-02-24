@@ -11,7 +11,7 @@ export default {
         </select>
       </span>
       <input readonly="{{isListItem}}" class="key is-leaf {{isListItem ? 'readonly' : ''}} {{isNull ? 'is-null' : ''}}" value="{{isListItem ? index : item.key}}" on-blur="setKey($event)" on-focus="selectAll($event)">
-      <input s-if="isString" class="value" value="{{item.value}}" on-blur="update($event)"></input>
+      <input s-if="isString" class="value" value="{{item.value}}" on-blur="update($event)">
       <input s-if="isNumber" class="value" type="number" value="{{item.value}}" on-blur="update($event)">
       <button s-if="isBoolean" class="boolean" on-click="update($event)">
         <span>{{item.value ? '是' : '否'}}</span>
